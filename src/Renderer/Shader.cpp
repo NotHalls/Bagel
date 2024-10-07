@@ -101,3 +101,18 @@ std::string Shader::getShaderTypeFromExtension(const std::string& filePath)
 
     return "";
 }
+
+
+// OPENGL FUNCTIONALITIES //
+int Shader::getUniformLocation(const std::string& name)
+{ return glGetUniformLocation(m_shaderProgram, name.c_str()); }
+
+void Shader::SetUniformFloat(const std::string& uniformName, float value)
+{ glUniform1f(getUniformLocation(uniformName), value); }
+void Shader::SetUniformInt(const std::string& uniformName, int value)
+{ glUniform1i(getUniformLocation(uniformName), value); }
+
+void Shader::SetUniformVec3(const std::string& uniformName, const glm::vec3& value)
+{ glUniform3f(getUniformLocation(uniformName), value.x, value.y, value.z); }
+void Shader::SetUniformIVec3(const std::string& uniformName, const glm::ivec3& value)
+{ glUniform3i(getUniformLocation(uniformName), value.x, value.y, value.z); }

@@ -42,6 +42,7 @@ void Game::Update(float deltaTime)
 
 
     m_2DShader->Bind();
+    m_2DShader->SetUniformVec3("color", {1.0f, 0.0f, 1.0f});
 
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
