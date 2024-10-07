@@ -4,8 +4,8 @@
 #include <string>
 
 #include "Window/Window.hpp"
-#include "Object.hpp"
-#include "ObjectList.hpp"
+#include "Component.hpp"
+#include "ComponentList.hpp"
 
 
 class Application
@@ -16,7 +16,7 @@ private:
 
     std::unique_ptr<Window> m_window;
 
-    ObjectList m_objects;
+    ComponentList m_components;
 
 
 public:
@@ -27,8 +27,8 @@ public:
     void Run();
     void Close();
 
-    void AddObject(Object* object);
-    void RemoveObject(Object* object);
+    void AddComponent(Component* component);
+    void RemoveComponent(Component* component);
 };
 
 Application* CreateApp();

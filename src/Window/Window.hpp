@@ -33,5 +33,7 @@ public:
     virtual void Update() = 0;
     virtual void Close() = 0;
 
+    virtual float GetElapsedWindowTime() = 0;
+
     static Window* CreateWindow(const WindowInformation& windowInfo = WindowInformation());
 };

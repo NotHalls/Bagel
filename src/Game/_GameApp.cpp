@@ -1,6 +1,6 @@
 #include "App/Application.hpp"
 
-#include "Game.hpp"
+#include "Bagel/Game.hpp"
 
 
 class GameApp : public Application
@@ -9,7 +9,7 @@ public:
     GameApp()
         : Application("Bagel")
     {
-        AddObject(new Game());
+        AddComponent(new Game());
     }
 };
 

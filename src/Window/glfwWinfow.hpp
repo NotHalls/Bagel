@@ -21,9 +21,11 @@ private:
     { m_glfwWindowInfo.WindowWidth = size.first; m_glfwWindowInfo.WindowHeight = size.second; }
 
     virtual void* getWindow() override { return m_mainWindow; }
+    virtual float GetElapsedWindowTime() override { return glfwGetTime(); }
 
     virtual void Update() override;
     virtual void Close() override;
+
 
 
     struct glfwWindowInformation

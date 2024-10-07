@@ -1,17 +1,21 @@
+#include <chrono>
 #include <cstddef>
+#include <iomanip>
 #include <iostream>
 
 #include <glad/glad.h>
 #include <stdexcept>
 
 #include "Renderer/_Renderer.hpp"
-#include "App/Object.hpp"
+#include "App/Component.hpp"
+#include "Tools/Time.hpp"
+#include "Tools/Random.hpp"
 
 #include "Game.hpp"
 
 
 Game::Game()
-    : Object("Game")
+    : Component("Game")
 {
     m_2DShader = std::shared_ptr<Shader>(Shader::CreateShader({
         "assets/shaders/2DShader.vertex.glsl",
@@ -20,11 +24,9 @@ Game::Game()
 }
 
 void Game::Start()
-{
-    std::cout << "STARTING..." << std::endl;
-}
+{}
 
-void Game::Update(float deltaTime)
+void Game::Update(double deltaTime)
 {
     renderer.ColorScreen(m_screenColor);
 
@@ -41,17 +43,20 @@ void Game::Update(float deltaTime)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
 
     m_2DShader->Bind();
-    m_2DShader->SetUniformVec3("color", {1.0f, 0.0f, 1.0f});
+    m_2DShader->SetUniformVec3("u_color", m_triColor);
 
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void Game::Destroy()
-{
-}
+{}

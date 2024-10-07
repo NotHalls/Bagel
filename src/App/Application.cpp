@@ -1,10 +1,8 @@
 #include <stdexcept>
 #include <string>
 
-#include <GLFW/glfw3.h>
-
 #include "Application.hpp"
-#include "Object.hpp"
+#include "Component.hpp"
 
 
 Application* Application::m_app = nullptr;
@@ -20,26 +18,26 @@ Application::Application(const std::string& appName)
 
 void Application::Run()
 {
-    for(Object* obj : m_objects)
+    for(Component* component : m_components)
     {
-        obj->Start();
+        component->Start();
     }
 
     float lastTime = 0.0f;
 
     while(!CloseApplication)
     {
-        float time = glfwGetTime();
-        float dt = time - lastTime;
+        double time = m_window->GetElapsedWindowTime();
+        double dt = time - lastTime;
         lastTime = time;
 
         m_window->Update();
         
-        // we will call update from the master Object class
-        //which will call all of its child objects
-        for(Object* obj : m_objects)
+        // we will call update from the master Component class
+        //which will call all of its child component
+        for(Component* component : m_components)
         {
-            obj->Update(dt);
+            component->Update(dt);
         }
     }
 }
@@ -51,7 +49,7 @@ void Application::Close()
 }
 
 
-void Application::AddObject(Object* object)
-{ m_objects.AddObject(object); }
-void Application::RemoveObject(Object* object)
-{ m_objects.RemoveObject(object); }
+void Application::AddComponent(Component* component)
+{ m_components.AddComponent(component); }
+void Application::RemoveComponent(Component* component)
+{ m_components.RemoveComponent(component); }
