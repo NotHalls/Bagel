@@ -21,17 +21,19 @@ private:
     uint32_t m_VAO;
 
     // n *3 where n is the number of vertices
-    float vertices[3 *3] = 
+    float vertices[4 *3] = 
     {
         -0.5f,  -0.5f,  0.0f,
          0.5f,  -0.5f,  0.0f,
-         0.0f,   0.5f,  0.0f
+         0.5f,   0.5f,  0.0f,
+        -0.5f,   0.5f,  0.0f
     };
 
     // n *3 where n = number of triangles
-    float indices[1 *3] =
+    uint32_t indices[2 *3] =
     {
-        0, 1, 2
+        0, 1, 2,
+        2, 3, 0
     };
 
 
