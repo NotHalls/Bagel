@@ -54,7 +54,6 @@ void Shader::processShader(const std::vector<std::string>& shaderFiles)
         if(!success)
         {
             const int maxLength = 512;
-            // glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
             char infoLog[maxLength];
             glGetShaderInfoLog(shader, maxLength, nullptr, infoLog);
 
@@ -72,7 +71,6 @@ void Shader::processShader(const std::vector<std::string>& shaderFiles)
     if(!success)
     {
         const int maxLength = 512;
-        // glGetProgramiv(m_shaderProgram, GL_INFO_LOG_LENGTH, &maxLength);
         char infoLog[maxLength];
         glGetProgramInfoLog(m_shaderProgram, maxLength, nullptr, infoLog);
 
@@ -99,7 +97,7 @@ std::string Shader::getShaderTypeFromExtension(const std::string& filePath)
     std::string extension = filePath.substr(dotPosition);
 
     if(dotPosition != std::string::npos)
-        return extension;    // should be wprry about returning a temp obj?
+        return extension;
 
-    return "";                                  // here aswell
+    return "";
 }

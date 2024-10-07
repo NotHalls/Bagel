@@ -26,6 +26,9 @@ public:
     
     void Bind() { glUseProgram(m_shaderProgram); }
     void Unbind() { glUseProgram(0); }
+
+    void SetUniformFloat(const std::string& uniformName, float value);
+
     
     static Shader* CreateShader(const std::vector<std::string>& shaderFiles);
 };
