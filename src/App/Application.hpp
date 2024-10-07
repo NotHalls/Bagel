@@ -3,10 +3,9 @@
 #include <memory>
 #include <string>
 
-#include "ObjectList.hpp"
 #include "Window/Window.hpp"
 #include "Object.hpp"
-#include "App/ObjectList.hpp"
+#include "ObjectList.hpp"
 
 
 class Application

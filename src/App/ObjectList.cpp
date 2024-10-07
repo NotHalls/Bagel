@@ -7,7 +7,10 @@
 ObjectList::~ObjectList()
 {
     for(Object* obj : m_objects)
+    {
+        obj->Destroy();
         delete obj;
+    }
 }
 
 void ObjectList::AddObject(Object* object)
@@ -22,6 +25,7 @@ void ObjectList::RemoveObject(Object* object)
     
     if(itr != m_objects.end())
     {
+        object->Destroy();
         m_objects.erase(itr);
         m_index--;
     }

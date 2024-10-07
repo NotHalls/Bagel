@@ -9,12 +9,12 @@ struct WindowInformation
 {
     std::string WindowName = "Unnamed Window";
 
-    uint32_t WindowWidth = 1280;
-    uint32_t WindowHeight = 720;
+    uint32_t WindowWidth = 800;
+    uint32_t WindowHeight = 600;
 
     WindowInformation(  const std::string& windowName = "Unnamed Applicarion",
-                        uint32_t windowWidth = 1280,
-                        uint32_t windowHeight = 720)
+                        uint32_t windowWidth = 800,
+                        uint32_t windowHeight = 600)
         : WindowName(windowName),
           WindowWidth(windowWidth), WindowHeight(windowHeight)
     {}

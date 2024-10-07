@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.29)
 
 set(PROJECT_NAME Bagel)
 
@@ -24,13 +24,26 @@ endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin-objs/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
-
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
 
 add_subdirectory(./submodules/glfw)
 
 add_library(glad STATIC submodules/glad/src/glad.c)
 target_include_directories(glad PUBLIC submodules/glad/include)
+
+add_library(imgui STATIC
+    submodules/imgui/imconfig.h
+    submodules/imgui/imgui.h
+    submodules/imgui/imgui.cpp
+    submodules/imgui/imgui_draw.cpp
+    submodules/imgui/imgui_internal.h
+    submodules/imgui/imgui_widgets.cpp
+    submodules/imgui/imstb_rectpack.h
+    submodules/imgui/imstb_textedit.h
+    submodules/imgui/imstb_truetype.h
+    submodules/imgui/imgui_demo.cpp
+)
+target_include_directories(imgui PUBLIC submodules/imgui)
 
 file(GLOB_RECURSE MAIN_SOURCES "./src/*.cpp")
 
@@ -44,7 +57,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     src
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw imgui glad)
 
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC GLFW_INCLUDE_NONE)

@@ -1,9 +1,9 @@
 #include <iostream>
 #include <ostream>
+#include <stdexcept>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <stdexcept>
 
 #include "glfwWinfow.hpp"
 #include "App/Application.hpp"
@@ -16,7 +16,9 @@ void GlfwErrorCallback(int error, const char* description)
               << description << std::endl;
 }
 void glfwFramebufferResizeCallback(GLFWwindow* window, int width, int height)
-{ glViewport(0, 0, width, height); }
+{
+    glViewport(0, 0, width, height);
+}
 
 
 Window* Window::CreateWindow(const WindowInformation& windowInfo)
@@ -58,7 +60,7 @@ void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
     glfwMakeContextCurrent(m_mainWindow);
     glfwSetFramebufferSizeCallback(m_mainWindow, glfwFramebufferResizeCallback);
 
-    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         throw std::runtime_error("Failed To Load OpenGL From GLAD LOADER");
 }
 
