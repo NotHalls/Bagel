@@ -6,10 +6,12 @@
 #include <glad/glad.h>
 #include <stdexcept>
 
+#include "GLFW/glfw3.h"
 #include "Renderer/_Renderer.hpp"
 #include "App/Component.hpp"
 #include "Tools/Time.hpp"
 #include "Tools/Random.hpp"
+#include "Debugger/defines.hpp"
 
 #include "Game.hpp"
 
@@ -30,18 +32,9 @@ void Game::Update(double deltaTime)
 {
     renderer.ColorScreen(m_screenColor);
 
-
-    glGenBuffers(1, &m_VBO);
-    glGenBuffers(1, &m_IBO);
     glGenVertexArrays(1, &m_VAO);
 
     glBindVertexArray(m_VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -51,11 +44,11 @@ void Game::Update(double deltaTime)
     glEnableVertexAttribArray(2);
 
 
+    m_IndexBuffer = IndexBuffer::Create(indices, 6);
     m_2DShader->Bind();
     m_2DShader->SetUniformVec3("u_color", m_triColor);
 
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
 void Game::Destroy()

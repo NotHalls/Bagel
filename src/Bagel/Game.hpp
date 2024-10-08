@@ -7,6 +7,7 @@
 
 #include "Renderer/_Renderer.hpp"
 #include "Renderer/Shader.hpp"
+#include "Renderer/Buffer.hpp"
 #include "App/Component.hpp"
 
 
@@ -18,9 +19,9 @@ private:
 
     glm::vec3 m_triColor = {0.5f, 0.0f, 0.5f};
 
-    uint32_t m_VBO;
-    uint32_t m_IBO;
     uint32_t m_VAO;
+    uint32_t m_IBO;
+
 
     // n *m where n is the number of vertices; m is the number of attributes
     float vertices[4 *8] = 
@@ -39,6 +40,10 @@ private:
         2, 3, 0
     };
 
+    std::shared_ptr<VertexBuffer>
+    m_VertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));
+    std::shared_ptr<IndexBuffer>
+    m_IndexBuffer = IndexBuffer::Create(indices, sizeof(indices));
 
     std::shared_ptr<Shader> m_2DShader;
 
