@@ -1,5 +1,7 @@
-#include <glad/glad.h>
+#include <iostream>
 #include <memory>
+
+#include <glad/glad.h>
 
 #include "Buffer.hpp"
 

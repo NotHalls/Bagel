@@ -23,6 +23,8 @@ Game::Game()
         "assets/shaders/2DShader.vertex.glsl",
         "assets/shaders/2DShader.fragment.glsl"
     }));
+
+    m_boxTexture = Texture::Create("assets/Textures/Box.png");
 }
 
 void Game::Start()
@@ -33,8 +35,9 @@ void Game::Update(double deltaTime)
     renderer.ColorScreen(m_screenColor);
 
     glGenVertexArrays(1, &m_VAO);
-
     glBindVertexArray(m_VAO);
+
+    m_IndexBuffer = IndexBuffer::Create(indices, 6);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -43,10 +46,11 @@ void Game::Update(double deltaTime)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+    m_boxTexture->Bind(0);
 
-    m_IndexBuffer = IndexBuffer::Create(indices, 6);
     m_2DShader->Bind();
     m_2DShader->SetUniformVec3("u_color", m_triColor);
+    m_2DShader->SetUniformInt("u_texture", 0);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
