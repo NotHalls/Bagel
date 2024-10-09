@@ -31,5 +31,5 @@ public:
     void Bind(uint32_t slot = 0);
     void Unbind(uint32_t slot);
 
-    static std::shared_ptr<Texture> Create(const std::string& texPath);
+    static std::unique_ptr<Texture> Create(const std::string& texPath);
 };

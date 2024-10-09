@@ -32,12 +32,13 @@ void Game::Start()
 
 void Game::Update(double deltaTime)
 {
-    renderer.ColorScreen(m_screenColor);
-
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
+    Renderer::ColorScreen(m_screenColor);
 
     m_IndexBuffer = IndexBuffer::Create(indices, 6);
+
+    /*
+    
+    */
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);

@@ -8,20 +8,18 @@
 #include "Renderer/_Renderer.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Buffer.hpp"
+#include "Renderer/VertexArray.hpp"
 #include "App/Component.hpp"
 #include "Renderer/Texture.hpp"
 #include "Game/Object.hpp"
 
 
-class Game : public Component
+ class Game : public Component
 {
 private:
-    Renderer renderer;
     glm::vec4 m_screenColor = {0.1f, 0.1f, 0.1f, 1.0f};
 
     glm::vec3 m_triColor = {0.5f, 0.0f, 0.5f};
-
-    uint32_t m_VAO;
 
 
     // n *m where n is the number of vertices; m is the number of attributes
@@ -41,6 +39,8 @@ private:
         2, 3, 0
     };
 
+    std::shared_ptr<VertexArray>
+    m_VertexArray = VertexArray::Create();
     std::shared_ptr<VertexBuffer>
     m_VertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices));    
     std::shared_ptr<IndexBuffer>

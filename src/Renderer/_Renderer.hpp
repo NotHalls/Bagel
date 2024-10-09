@@ -6,5 +6,5 @@
 class Renderer
 {
 public:
-    void ColorScreen(const glm::vec4& color);
+    static void ColorScreen(const glm::vec4& color);
 };

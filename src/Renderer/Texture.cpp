@@ -7,8 +7,8 @@
 #include "Texture.hpp"
 
 
-std::shared_ptr<Texture> Texture::Create(const std::string& texPath)
-{ return std::make_shared<Texture>(texPath); }
+std::unique_ptr<Texture> Texture::Create(const std::string& texPath)
+{ return std::make_unique<Texture>(texPath); }
 
 Texture::Texture(const std::string& texPath)
     : m_texFile(texPath), m_textureID(0), m_width(0), m_height(0)
