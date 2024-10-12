@@ -57,6 +57,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     submodules/stb_image
 
     src
+    src/Include
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw imgui glad)

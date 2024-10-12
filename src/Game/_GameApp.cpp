@@ -1,6 +1,6 @@
 #include "App/Application.hpp"
 
-#include "Bagel/Game.hpp"
+#include "_Bagel/Game.hpp"
 
 
 class GameApp : public Application

@@ -23,6 +23,7 @@ public:
     Application(const std::string& appName);
 
     static Application& Get() { return *m_app; }
+    Window& GetWindow() { return *m_window; }
 
     void Run();
     void Close();

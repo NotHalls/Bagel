@@ -12,7 +12,7 @@
 #include "gtc/type_ptr.hpp"
 
 #include "Shader.hpp"
-#include "Debugger/defines.hpp"
+#include "Tools/Debug.hpp"
 
 
 Shader* Shader::CreateShader(const std::vector<std::string>& shaderFiles)

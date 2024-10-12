@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include "stb_image.hpp"
 
-#include "Debugger/defines.hpp"
+#include "Tools/Debug.hpp"
 #include "Texture.hpp"
 
 

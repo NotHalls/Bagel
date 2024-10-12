@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "VertexArray.hpp"
-#include "Debugger/defines.hpp"
+#include "Tools/Debug.hpp"
 #include "Renderer/Buffer.hpp"
 #include "Renderer/BufferLayout.hpp"
 
