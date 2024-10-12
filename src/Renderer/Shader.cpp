@@ -8,7 +8,11 @@
 
 #include <glad/glad.h>
 
+#include "glm.hpp"
+#include "gtc/type_ptr.hpp"
+
 #include "Shader.hpp"
+#include "Debugger/defines.hpp"
 
 
 Shader* Shader::CreateShader(const std::vector<std::string>& shaderFiles)
@@ -105,7 +109,12 @@ std::string Shader::getShaderTypeFromExtension(const std::string& filePath)
 
 // OPENGL FUNCTIONALITIES //
 int Shader::getUniformLocation(const std::string& name)
-{ return glGetUniformLocation(m_shaderProgram, name.c_str()); }
+{
+    int location = glGetUniformLocation(m_shaderProgram, name.c_str());
+    // @FIXME: the ASSERT is getting called even if the uniform exists
+    // ASSERT(location, "Couldn't Find The Uniform '" + name + "'");
+    return location;
+}
 
 void Shader::SetUniformFloat(const std::string& uniformName, float value)
 { glUniform1f(getUniformLocation(uniformName), value); }
@@ -116,3 +125,6 @@ void Shader::SetUniformVec3(const std::string& uniformName, const glm::vec3& val
 { glUniform3f(getUniformLocation(uniformName), value.x, value.y, value.z); }
 void Shader::SetUniformIVec3(const std::string& uniformName, const glm::ivec3& value)
 { glUniform3i(getUniformLocation(uniformName), value.x, value.y, value.z); }
+
+void Shader::SetUniformMat4(const std::string& uniformName, const glm::mat4& value)
+{ glUniformMatrix4fv(getUniformLocation(uniformName), 1, GL_FALSE, glm::value_ptr(value)); }

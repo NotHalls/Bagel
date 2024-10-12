@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ext/matrix_float4x4.hpp"
 #include "ext/vector_float3.hpp"
 #include "ext/vector_int3.hpp"
 #include <string>
@@ -35,6 +36,8 @@ public:
 
     void SetUniformVec3(const std::string& uniformName, const glm::vec3& value);
     void SetUniformIVec3(const std::string& uniformName, const glm::ivec3& value);
+
+    void SetUniformMat4(const std::string& uniformName, const glm::mat4& value);
 
 
     

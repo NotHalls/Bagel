@@ -8,10 +8,12 @@ out vec3 o_color;
 out vec2 o_texCoords;
 
 // UNIFORMS //
+uniform mat4 u_mvp;
+
 
 void main()
 {
-    gl_Position = vec4(a_pos, 1.0f);
+    gl_Position = u_mvp * vec4(a_pos, 1.0f);
     // o_color = a_color;
     o_texCoords = a_texCoords;
 

@@ -54,6 +54,8 @@ Texture::Texture(const std::string& texPath)
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(textureData);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 Texture::~Texture()
 { glDeleteTextures(1, &m_textureID); }

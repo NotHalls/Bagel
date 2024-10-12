@@ -1,14 +1,15 @@
-#include <iostream>
 #include <memory>
 
 #include <glad/glad.h>
 
 #include "Buffer.hpp"
+#include "BufferLayout.hpp"
 
 
 // VERTEX BUFFER //
 std::shared_ptr<VertexBuffer> VertexBuffer::Create(const float* buffer, uint32_t size)
 { return std::make_shared<VertexBuffer>(buffer, size); }
+
 
 VertexBuffer::VertexBuffer(const float* buffer, uint32_t size)
 {
