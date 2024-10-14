@@ -8,9 +8,10 @@ class Camera
 private:
     glm::mat4 m_view;
     glm::mat4 m_projection;
+    glm::mat4 m_ViewAndProjection;
 
     glm::vec3 m_position;
-    glm::vec3 m_rotation;
+    glm::vec3 m_target;
 
     float m_FOV;
     float m_width, m_height;
@@ -18,6 +19,8 @@ private:
 
 
 private:
+    void RecalculateView();
+    void RecalculateProjection();
     void RecalculateMatrices();
 
 public:
@@ -25,17 +28,16 @@ public:
 
     const glm::mat4& GetViewMatrix() const { return m_view; }
     const glm::mat4& GetProjectionMatrix() const { return m_projection; }
+    const glm::mat4& GetViewAndProjectionMatrix() const { return m_ViewAndProjection; }
 
     float GetFOV() const { return m_FOV; }
-    void SetFOV(float fov) { m_FOV = fov; RecalculateMatrices(); }
+    void SetFOV(float fov) { m_FOV = fov; RecalculateProjection(); }
 
     float GetWidth() const { return m_width; }
     float GetHeight() const { return m_height; }
-    void SetWidth(float width) { m_width = width; RecalculateMatrices(); }
-    void SetHeight(float height) { m_height = height; RecalculateMatrices(); }
+    void SetWidth(float width) { m_width = width; RecalculateProjection(); }
+    void SetHeight(float height) { m_height = height; RecalculateProjection(); }
 
     const glm::vec3& GetPosition() const { return m_position; }
-    const glm::vec3& GetRotation() const { return m_rotation; }
-    void SetPosition(const glm::vec3& position) { m_position = position; RecalculateMatrices(); }
-    void SetRotation(const glm::vec3& rotation) { m_rotation = rotation; RecalculateMatrices(); }
+    void SetPosition(const glm::vec3& position) { m_position = position; RecalculateView(); }
 };

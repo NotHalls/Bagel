@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "BagelMath.hpp"
-
+#include "BagelGame.hpp"
 #include "BagelEngine.hpp"
 #include "BagelApp.hpp"
 
@@ -18,14 +18,10 @@ private:
 
     glm::mat4 m_mvp = glm::mat4(1.0f);
     glm::mat4 m_model = glm::mat4(1.0f);
-    glm::mat4 m_view = glm::mat4{1.0f};
-    glm::mat4 m_projection = glm::mat4(1.0f);
 
     glm::vec3 m_position = {0.0f, 0.0f, 0.0f};
     glm::vec3 m_scale = {1.0f, 1.0f, 1.0f};
     glm::vec3 m_rotation = {0.0f, 0.0f, 0.0f};
-
-    glm::vec3 m_cameraPosition = {0.0f, 0.0f, 2.0f};
 
 
     // n * m where n is the number of vertices; m is the number of attributes
@@ -65,6 +61,8 @@ private:
         6, 2, 1,
     };
 
+    Camera m_camera;
+
     std::shared_ptr<VertexArray>
     m_VertexArray = VertexArray::Create();
     std::shared_ptr<VertexBuffer>
@@ -79,6 +77,9 @@ private:
 
     std::shared_ptr<Shader> m_2DShader;
 
+
+private:
+    void onMouseMove(float x, float y);
 
 public:
     Game();

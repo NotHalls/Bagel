@@ -11,7 +11,7 @@
 #include "Game.hpp"
 
 Game::Game()
-    : Component("Game")
+    : Component("Game"), m_camera(45.0f, 800.0f, 600.0f)
 {
     m_2DShader = std::shared_ptr<Shader>(Shader::CreateShader({
         "assets/shaders/2DShader.vertex.glsl",
@@ -47,10 +47,27 @@ void Game::Update(double deltaTime)
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
         glm::scale(glm::mat4(1.0f), m_scale);
 
-    m_view = glm::mat4(1.0f);
-    m_view = glm::lookAt(m_cameraPosition, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    m_projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
-    m_mvp = m_projection * m_view * m_model;
+    m_mvp = m_camera.GetViewAndProjectionMatrix() * m_model;
+
+    glm::vec3 camPosition = m_camera.GetPosition();
+    if(Input::IsKeyClicked(BG_KEY_W))
+        camPosition.z -= 10.0f * deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_S))
+        camPosition.z += 10.0f * deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_A))
+        camPosition.x -= 10.0f * deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_D))
+        camPosition.x += 10.0f * deltaTime;
+    m_camera.SetPosition(camPosition);
+
+
+    if(Input::IsKeyClicked(BG_KEY_C))
+        Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
+    else
+        Input::SetCursorMode(BG_CURSOR_MODE_NORMAL);
+
+    Input::OnMouseMove(std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
+    
 
     m_boxTexture->Bind(0);
     m_wedTexture->Bind(1);
@@ -67,3 +84,9 @@ void Game::Update(double deltaTime)
 
 void Game::Destroy()
 {}
+
+
+void Game::onMouseMove(float x, float y)
+{
+    std::cout << "X: " << x << ", Y: " << y << "\n";
+}

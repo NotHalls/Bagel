@@ -1,0 +1,7 @@
+#pragma once
+
+
+#define BG_CURSOR_MODE_NORMAL          0x00034001
+#define BG_CURSOR_MODE_HIDDEN          0x00034002
+#define BG_CURSOR_MODE_DISABLED        0x00034003
+#define BG_CURSOR_MODE_CAPTURED        0x00034004
