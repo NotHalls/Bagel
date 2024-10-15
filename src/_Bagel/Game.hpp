@@ -24,6 +24,14 @@ private:
     glm::vec3 m_rotation = {0.0f, 0.0f, 0.0f};
 
 
+    float mouseSensitivity = 0.1;
+    float camSpeed = 5.0f;
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+    float lastX = 800/2, lastY = 600/2; // should be the window's width/2, height/2
+    bool firstMouse = true;
+
+
     // n * m where n is the number of vertices; m is the number of attributes
     float vertices[8 * 8] = 
     {
@@ -51,8 +59,8 @@ private:
         4, 5, 6, // back
         6, 7, 4,
 
-        0, 7, 6, // top
-        6, 1, 0,
+        3, 2, 6, // top
+        6, 7, 3,
 
         0, 3, 7, // left
         7, 4, 0,

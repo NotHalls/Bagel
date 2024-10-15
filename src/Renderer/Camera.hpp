@@ -11,7 +11,7 @@ private:
     glm::mat4 m_ViewAndProjection;
 
     glm::vec3 m_position;
-    glm::vec3 m_target;
+    glm::vec3 m_lookAt;
 
     float m_FOV;
     float m_width, m_height;
@@ -40,4 +40,7 @@ public:
 
     const glm::vec3& GetPosition() const { return m_position; }
     void SetPosition(const glm::vec3& position) { m_position = position; RecalculateView(); }
+
+    const glm::vec3& GetLookingTarget() const { return m_lookAt; }
+    void SetLookingTarget(const glm::vec3& lookTarget) { m_lookAt = lookTarget; RecalculateView(); }
 };

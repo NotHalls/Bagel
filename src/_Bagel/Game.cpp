@@ -51,20 +51,20 @@ void Game::Update(double deltaTime)
 
     glm::vec3 camPosition = m_camera.GetPosition();
     if(Input::IsKeyClicked(BG_KEY_W))
-        camPosition.z -= 10.0f * deltaTime;
+        camPosition += m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
     if(Input::IsKeyClicked(BG_KEY_S))
-        camPosition.z += 10.0f * deltaTime;
+        camPosition -= m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
     if(Input::IsKeyClicked(BG_KEY_A))
-        camPosition.x -= 10.0f * deltaTime;
+        camPosition -= glm::normalize(glm::cross(
+            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
     if(Input::IsKeyClicked(BG_KEY_D))
-        camPosition.x += 10.0f * deltaTime;
+        camPosition += glm::normalize(glm::cross(
+            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
     m_camera.SetPosition(camPosition);
 
 
     if(Input::IsKeyClicked(BG_KEY_C))
         Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
-    else
-        Input::SetCursorMode(BG_CURSOR_MODE_NORMAL);
 
     Input::OnMouseMove(std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
     
@@ -89,4 +89,35 @@ void Game::Destroy()
 void Game::onMouseMove(float x, float y)
 {
     std::cout << "X: " << x << ", Y: " << y << "\n";
+
+    if(firstMouse)
+    {
+        lastX = x;
+        lastY = y;
+
+        firstMouse = false;
+    }
+
+    float xOffset = x - lastX;
+    float yOffset = lastY - y;
+    lastX = x;
+    lastY = y;
+
+    xOffset *= mouseSensitivity;
+    yOffset *= mouseSensitivity;
+
+    yaw += xOffset;
+    pitch += yOffset;
+
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    else if(pitch < -89.0f)
+        pitch = -89.0f;
+    
+    glm::vec3 dir = glm::vec3(0.0f);
+    dir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    dir.y = sin(glm::radians(pitch));
+    dir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    m_camera.SetLookingTarget(dir);
 }

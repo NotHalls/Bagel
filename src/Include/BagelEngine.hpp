@@ -7,5 +7,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 
+#include "Renderer/Camera.hpp"
+
 #include "Window/Window.hpp"
 
