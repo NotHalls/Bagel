@@ -107,6 +107,13 @@ std::string Shader::getShaderTypeFromExtension(const std::string& filePath)
 }
 
 
+// BIND AND UNBIND
+void Shader::Bind()
+{ glUseProgram(m_shaderProgram); }
+void Shader::Unbind()
+{ glUseProgram(0); }
+
+
 // OPENGL FUNCTIONALITIES //
 int Shader::getUniformLocation(const std::string& name)
 {

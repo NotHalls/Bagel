@@ -1,4 +1,4 @@
 #pragma once
 
-#include "Game/Object.hpp"
-#include "Game/Scene.hpp"
+#include "ObjectSystem/Object.hpp"
+#include "ObjectSystem/Scene.hpp"

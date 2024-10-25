@@ -66,7 +66,9 @@ void Game::Update(double deltaTime)
     if(Input::IsKeyClicked(BG_KEY_C))
         Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
 
-    Input::OnMouseMove(std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
+    Input::OnMouseMove(
+        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2)
+    );
     
 
     m_boxTexture->Bind(0);

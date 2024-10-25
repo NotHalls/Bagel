@@ -12,9 +12,18 @@ std::unique_ptr<Texture> Texture::Create(const std::string& texPath)
 
 Texture::Texture(const std::string& texPath)
     : m_texFile(texPath), m_textureID(0), m_width(0), m_height(0)
+{ Init(); }
+Texture::Texture(const std::string& texPath, TextureType type)
+    : m_texFile(texPath), m_textureID(0), m_width(0), m_height(0), m_textureType(type)
+{ Init(); }
+Texture::~Texture()
+{ glDeleteTextures(1, &m_textureID); }
+
+
+void Texture::Init()
 {
     int width, height, channels;
-    stbi_uc* textureData = stbi_load(texPath.c_str(), &width, &height, &channels, 0);
+    stbi_uc* textureData = stbi_load(m_texFile.c_str(), &width, &height, &channels, 0);
 
     ASSERT(textureData, "Failed To Load Image");
 
@@ -57,8 +66,7 @@ Texture::Texture(const std::string& texPath)
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
-Texture::~Texture()
-{ glDeleteTextures(1, &m_textureID); }
+
 
 void Texture::Bind(uint32_t slot)
 { glBindTextureUnit(slot, m_textureID); }

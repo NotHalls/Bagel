@@ -15,7 +15,7 @@ private:
 
 
 public:
-    VertexBuffer();
+    VertexBuffer() {}
     VertexBuffer(const float* buffer, uint32_t size);
     ~VertexBuffer();
 

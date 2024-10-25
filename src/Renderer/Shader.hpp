@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#include <glad/glad.h>
-
 
 class Shader
 {
@@ -28,8 +26,8 @@ public:
     Shader(const std::vector<std::string>& shaderFiles);  
     ~Shader();
     
-    void Bind() { glUseProgram(m_shaderProgram); }
-    void Unbind() { glUseProgram(0); }
+    void Bind();
+    void Unbind();
 
     void SetUniformFloat(const std::string& uniformName, float value);
     void SetUniformInt(const std::string& uniformName, int value);
