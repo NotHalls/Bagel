@@ -5,16 +5,18 @@
 #include "BagelTools.hpp"
 
 
+
+
 std::shared_ptr<Mesh> Mesh::Create(
     const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
-    const std::vector<ModelTexture>& textures
+    const std::vector<std::shared_ptr<Texture>>& textures
 )
 { return std::make_shared<Mesh>(vertices, indices, textures); }
 
 
 Mesh::Mesh(
     const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
-    const std::vector<ModelTexture>& textures
+    const std::vector<std::shared_ptr<Texture>>& textures
 )
     : m_vertices(vertices), m_Indices(indices), m_textures(textures)
 { init(); }
@@ -40,7 +42,7 @@ void Mesh::init()
     m_VAO->Unbind();
 }
 
-void Mesh::Draw(Shader& shader)
+void Mesh::Draw(std::shared_ptr<Shader>& shader)
 {
     uint32_t difuseCount = 1;
     uint32_t roughnessCount  = 1;
@@ -52,7 +54,7 @@ void Mesh::Draw(Shader& shader)
     {
         glActiveTexture(GL_TEXTURE0 + i);
 
-        std::string textureTypeString = TextureTypeString(m_textures[i].Texture->GetTextureType());
+        std::string textureTypeString = TextureTypeString(m_textures[i]->GetTextureType());
         std::string textureNumberOffset;
         
         if(textureTypeString == "Diffuse")
@@ -66,8 +68,8 @@ void Mesh::Draw(Shader& shader)
         else
             ASSERT(false, "Unknown Texture Type Found While Processing Data To Shader");
 
-        shader.SetUniformInt("u_material." + textureTypeString + textureNumberOffset, i);
-        m_textures[i].Texture->Bind(i);
+        shader->SetUniformInt(textureTypeString + textureNumberOffset, i);
+        m_textures[i]->Bind(i);
     }
     glActiveTexture(GL_TEXTURE0);
 

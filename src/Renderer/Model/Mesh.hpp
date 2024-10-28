@@ -12,18 +12,13 @@ struct ModelVertice
     glm::vec3 Normals;
 };
 
-struct ModelTexture
-{
-    std::shared_ptr<Texture> Texture;
-};
-
 
 class Mesh
 {
 private:
     std::vector<ModelVertice> m_vertices;
     std::vector<uint32_t> m_Indices;
-    std::vector<ModelTexture> m_textures;
+    std::vector<std::shared_ptr<Texture>> m_textures;
 
     std::shared_ptr<VertexArray> m_VAO;
     std::shared_ptr<VertexBuffer> m_VBO;
@@ -34,13 +29,10 @@ private:
     void init();
 
 public:
-    Mesh() {}
-    Mesh(
-        const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
-        const std::vector<ModelTexture>& textures
-    );
+    Mesh(const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
+         const std::vector<std::shared_ptr<Texture>>& textures);
 
-    void Draw(Shader& shader);
+    void Draw(std::shared_ptr<Shader>& shader);
 
     // uint32_t GetVAO() { return m_VAO; }
     // uint32_t GetVBO() { return m_VBO; }
@@ -49,6 +41,5 @@ public:
 
     static std::shared_ptr<Mesh> Create(
         const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
-        const std::vector<ModelTexture>& textures
-    );
+        const std::vector<std::shared_ptr<Texture>>& textures);
 };

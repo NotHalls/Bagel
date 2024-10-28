@@ -10,6 +10,7 @@
 
 #include "Game.hpp"
 
+
 Game::Game()
     : Component("Game"), m_camera(45.0f, 800.0f, 600.0f)
 {
@@ -18,8 +19,76 @@ Game::Game()
         "assets/shaders/2DShader.fragment.glsl"
     }));
 
-    m_boxTexture = Texture::Create("assets/Textures/Box.png");
+    // m_boxTexture = Texture::Create("assets/Textures/Box.png");
+    m_boxTexture = Texture::Create("assets/Textures/Box.png", TextureType::Diffuse);
     m_wedTexture = Texture::Create("assets/Textures/Wed.jpg");
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(0.5f,   0.5f,  -0.5f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec2(1.0f, 1.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(-0.5f, -0.5f, -0.5f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::vec2(0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(0.5f, -0.5f, -0.5f),
+        glm::vec3(0.0f, 0.0f, 1.0f),
+        glm::vec2(1.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(-0.5f, 0.5f, -0.5f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec2(0.0f, 1.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(-0.5f, -0.5f, 0.5f),
+        glm::vec3(1.0f, 1.0f, 1.0f),
+        glm::vec2(0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(0.5f, -0.5f, 0.5f),
+        glm::vec3(0.0f, 0.0f, 1.0f),
+        glm::vec2(1.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(0.5f, 0.5f, 0.5f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec2(1.0f, 1.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(-0.5f, 0.5f, 0.5f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec2(0.0f, 1.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_indices.insert(m_indices.end(), {
+        0, 1, 2, 2, 3, 0,   // front
+        0, 4, 5, 5, 1, 0,   // down
+        4, 5, 6, 6, 7, 4,   // back
+        3, 2, 6, 6, 7, 3,   // top
+        0, 3, 7, 7, 4, 0,   //left
+        1, 5, 6, 6, 2, 1    //right
+    });
+
+    m_textures.push_back(m_boxTexture);
 }
 
 void Game::Start()
@@ -30,12 +99,13 @@ void Game::Update(double deltaTime)
     glEnable(GL_DEPTH_TEST);
     Renderer::ColorScreen(m_screenColor);
 
-    m_IndexBuffer = IndexBuffer::Create(indices, 36);
+    m_IndexBuffer = IndexBuffer::Create(indices, 6);
     
     m_VertexBuffer->SetBufferLayout({
         { AttribType::Vec3 },   // position
         { AttribType::Vec3 },   // color
-        { AttribType::Vec2 }    // texCoords
+        { AttribType::Vec2 },   // texCoords
+        { AttribType::Vec3 }    // normals
     });
     
     m_VertexArray->AddVertexBuffer(m_VertexBuffer);
@@ -81,7 +151,8 @@ void Game::Update(double deltaTime)
     m_2DShader->SetUniformInt("u_texture", 0);
     m_2DShader->SetUniformInt("u_texture1", 1);
 
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+    Mesh m_boxMesh(m_vertices, m_indices, m_textures);
+    m_boxMesh.Draw(m_2DShader);
 }
 
 void Game::Destroy()

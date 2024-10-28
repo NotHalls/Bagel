@@ -10,7 +10,7 @@
 class Shader
 {
 private:
-    uint32_t m_shaderProgram = NULL;
+    uint32_t m_shaderProgram;
 
 
 private:

@@ -63,4 +63,5 @@ public:
     void Unbind(uint32_t slot);
 
     static std::unique_ptr<Texture> Create(const std::string& texPath);
+    static std::unique_ptr<Texture> Create(const std::string& texPath, TextureType type);
 };

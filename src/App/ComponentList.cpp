@@ -15,8 +15,8 @@ ComponentList::~ComponentList()
 
 void ComponentList::AddComponent(Component* component)
 {
-    m_Components.emplace(m_Components.begin() + m_index, component);
-    m_index++;
+    m_Components.emplace(m_Components.begin() + ComponentList::ComponentList::m_index, component);
+    ComponentList::ComponentList::m_index++;
 }
 
 void ComponentList::RemoveComponent(Component* component)
@@ -27,6 +27,6 @@ void ComponentList::RemoveComponent(Component* component)
     {
         component->Destroy();
         m_Components.erase(itr);
-        m_index--;
+        ComponentList::m_index--;
     }
 }
