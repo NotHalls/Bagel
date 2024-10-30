@@ -7,9 +7,6 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 
-#include "Renderer/Model/Mesh.hpp"
-#include "Renderer/Model/Model.hpp"
-
 #include "Renderer/Camera.hpp"
 
 #include "Window/Window.hpp"

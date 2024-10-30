@@ -24,13 +24,6 @@ Game::Game()
     m_wedTexture = Texture::Create("assets/Textures/Wed.jpg");
 
     m_vertices.push_back(ModelVertice{
-        glm::vec3(0.5f,   0.5f,  -0.5f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
         glm::vec3(-0.5f, -0.5f, -0.5f),
         glm::vec3(1.0f, 1.0f, 1.0f),
         glm::vec2(0.0f, 0.0f),
@@ -41,6 +34,13 @@ Game::Game()
         glm::vec3(0.5f, -0.5f, -0.5f),
         glm::vec3(0.0f, 0.0f, 1.0f),
         glm::vec2(1.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    });
+
+    m_vertices.push_back(ModelVertice{
+        glm::vec3(0.5f, 0.5f, -0.5f),
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec2(1.0f, 1.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     });
 
@@ -87,8 +87,10 @@ Game::Game()
         0, 3, 7, 7, 4, 0,   //left
         1, 5, 6, 6, 2, 1    //right
     });
+    
 
     m_textures.push_back(m_boxTexture);
+
 }
 
 void Game::Start()
@@ -99,7 +101,7 @@ void Game::Update(double deltaTime)
     glEnable(GL_DEPTH_TEST);
     Renderer::ColorScreen(m_screenColor);
 
-    m_IndexBuffer = IndexBuffer::Create(indices, 6);
+    m_IndexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
     
     m_VertexBuffer->SetBufferLayout({
         { AttribType::Vec3 },   // position
@@ -119,26 +121,10 @@ void Game::Update(double deltaTime)
 
     m_mvp = m_camera.GetViewAndProjectionMatrix() * m_model;
 
-    glm::vec3 camPosition = m_camera.GetPosition();
-    if(Input::IsKeyClicked(BG_KEY_W))
-        camPosition += m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
-    if(Input::IsKeyClicked(BG_KEY_S))
-        camPosition -= m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
-    if(Input::IsKeyClicked(BG_KEY_A))
-        camPosition -= glm::normalize(glm::cross(
-            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
-    if(Input::IsKeyClicked(BG_KEY_D))
-        camPosition += glm::normalize(glm::cross(
-            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
-    m_camera.SetPosition(camPosition);
-
-
-    if(Input::IsKeyClicked(BG_KEY_C))
-        Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
+    handleInput(deltaTime);
 
     Input::OnMouseMove(
-        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2)
-    );
+        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
     
 
     m_boxTexture->Bind(0);
@@ -152,7 +138,10 @@ void Game::Update(double deltaTime)
     m_2DShader->SetUniformInt("u_texture1", 1);
 
     Mesh m_boxMesh(m_vertices, m_indices, m_textures);
-    m_boxMesh.Draw(m_2DShader);
+    m_boxMesh.SetModelMatrix(m_model);
+    m_boxMesh.Draw(m_2DShader, m_camera);
+
+    // glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(uint32_t), GL_UNSIGNED_INT, nullptr);
 }
 
 void Game::Destroy()
@@ -161,8 +150,6 @@ void Game::Destroy()
 
 void Game::onMouseMove(float x, float y)
 {
-    std::cout << "X: " << x << ", Y: " << y << "\n";
-
     if(firstMouse)
     {
         lastX = x;
@@ -193,4 +180,23 @@ void Game::onMouseMove(float x, float y)
     dir.y = sin(glm::radians(pitch));
     dir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     m_camera.SetLookingTarget(dir);
+}
+
+void Game::handleInput(double deltaTime)
+{
+    glm::vec3 camPosition = m_camera.GetPosition();
+    if(Input::IsKeyClicked(BG_KEY_W))
+        camPosition += m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_S))
+        camPosition -= m_camera.GetLookingTarget() * camSpeed * (float)deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_A))
+        camPosition -= glm::normalize(glm::cross(
+            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
+    if(Input::IsKeyClicked(BG_KEY_D))
+        camPosition += glm::normalize(glm::cross(
+            m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * camSpeed * (float)deltaTime;
+    m_camera.SetPosition(camPosition);
+
+    if(Input::IsKeyClicked(BG_KEY_C))
+        Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
 }

@@ -8,6 +8,9 @@
 #include "BagelEngine.hpp"
 #include "BagelApp.hpp"
 
+#include "Renderer/Model/Mesh.hpp"
+#include "Renderer/Model/Model.hpp"
+
 
  class Game : public Component
 {
@@ -33,40 +36,38 @@ private:
 
 
     // n * m where n is the number of vertices; m is the number of attributes
-    float vertices[8 * 11] = 
-    {
-        // positions                // color                // texCoordsw       // normals
-         0.5f,   0.5f,  -0.5f,       1.0f, 0.0f, 0.0f,       1.0f, 1.0f,        0.0f, 0.0f, 0.0f,   //2
-        -0.5f,  -0.5f,  -0.5f,       1.0f, 1.0f, 1.0f,       0.0f, 0.0f,        0.0f, 0.0f, 0.0f,   //0
-         0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f, 1.0f,       1.0f, 0.0f,        0.0f, 0.0f, 0.0f,   //1
-        -0.5f,   0.5f,  -0.5f,       0.0f, 1.0f, 0.0f,       0.0f, 1.0f,        0.0f, 0.0f, 0.0f,   //3
+    float vertices[8 * 11] = {
+        // positions                 // color                // texCoordsw      // normals
+        -0.5f,  -0.5f,  -0.5f,       1.0f, 1.0f, 1.0f,       0.0f, 0.0f,        1.0f, 1.0f, 1.0f,   // 0
+         0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f, 1.0f,       1.0f, 0.0f,        1.0f, 1.0f, 1.0f,   // 1
+         0.5f,   0.5f,  -0.5f,       1.0f, 0.0f, 0.0f,       1.0f, 1.0f,        1.0f, 1.0f, 1.0f,   // 2
+        -0.5f,   0.5f,  -0.5f,       0.0f, 1.0f, 0.0f,       0.0f, 1.0f,        1.0f, 1.0f, 1.0f,   // 3
 
-        -0.5f,  -0.5f,   0.5f,       1.0f, 1.0f, 1.0f,       0.0f, 0.0f,        0.0f, 0.0f, 0.0f,   //4
-         0.5f,  -0.5f,   0.5f,       0.0f, 0.0f, 1.0f,       1.0f, 0.0f,        0.0f, 0.0f, 0.0f,   //5
-         0.5f,   0.5f,   0.5f,       1.0f, 0.0f, 0.0f,       1.0f, 1.0f,        0.0f, 0.0f, 0.0f,   //6
-        -0.5f,   0.5f,   0.5f,       0.0f, 1.0f, 0.0f,       0.0f, 1.0f,        0.0f, 0.0f, 0.0f,   //7
+        -0.5f,  -0.5f,   0.5f,       1.0f, 1.0f, 1.0f,       0.0f, 0.0f,        1.0f, 1.0f, 1.0f,   // 4
+         0.5f,  -0.5f,   0.5f,       0.0f, 0.0f, 1.0f,       1.0f, 0.0f,        1.0f, 1.0f, 1.0f,   // 5
+         0.5f,   0.5f,   0.5f,       1.0f, 0.0f, 0.0f,       1.0f, 1.0f,        1.0f, 1.0f, 1.0f,   // 6
+        -0.5f,   0.5f,   0.5f,       0.0f, 1.0f, 0.0f,       0.0f, 1.0f,        1.0f, 1.0f, 1.0f,   // 7
     };
 
     // n * 3 where n = number of triangles
-    uint32_t indices[2 * 3] =
-    {
+    uint32_t indices[12 * 3] = {
         0, 1, 2, // front
-        2, 3, 0
+        2, 3, 0,
 
-        // 0, 4, 5, // down
-        // 5, 1, 0,
+        0, 4, 5, // down
+        5, 1, 0,
 
-        // 4, 5, 6, // back
-        // 6, 7, 4,
+        4, 5, 6, // back
+        6, 7, 4,
 
-        // 3, 2, 6, // top
-        // 6, 7, 3,
+        3, 2, 6, // top
+        6, 7, 3,
 
-        // 0, 3, 7, // left
-        // 7, 4, 0,
+        0, 3, 7, // left
+        7, 4, 0,
 
-        // 1, 5, 6, // right
-        // 6, 2, 1,
+        1, 5, 6, // right
+        6, 2, 1,
     };
 
     std::vector<ModelVertice> m_vertices;
@@ -119,6 +120,7 @@ private:
 
 private:
     void onMouseMove(float x, float y);
+    void handleInput(double deltaTime);
 
 public:
     Game();

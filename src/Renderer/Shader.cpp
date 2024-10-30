@@ -87,8 +87,8 @@ void Shader::processShader(const std::vector<std::string>& shaderFiles)
 std::string Shader::readFile(const std::string& filePath)
 {
     std::ifstream file(filePath, std::ios::in | std::ios::binary);
-    if(!file)
-        throw std::runtime_error("Failed To Open The File: " + filePath);
+
+    ASSERT(file, "Failed To Open The File: " + filePath)
 
     std::stringstream buffer;
     buffer << file.rdbuf();

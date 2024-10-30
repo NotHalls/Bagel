@@ -5,8 +5,6 @@
 #include "BagelTools.hpp"
 
 
-
-
 std::shared_ptr<Mesh> Mesh::Create(
     const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
     const std::vector<std::shared_ptr<Texture>>& textures
@@ -24,7 +22,7 @@ Mesh::Mesh(
 void Mesh::init()
 {
     m_VAO = VertexArray::Create();
-    m_IBO = IndexBuffer::Create(m_Indices.data(), sizeof(m_Indices) / sizeof(uint32_t));
+    m_IBO = IndexBuffer::Create(m_Indices.data(), m_Indices.size());
     m_VBO = VertexBuffer::Create(
         reinterpret_cast<const float*>(m_vertices.data()),
         (m_vertices.size() * (sizeof(ModelVertice) / sizeof(float))) * sizeof(float)
@@ -42,7 +40,7 @@ void Mesh::init()
     m_VAO->Unbind();
 }
 
-void Mesh::Draw(std::shared_ptr<Shader>& shader)
+void Mesh::Draw(std::shared_ptr<Shader>& shader, Camera& camera)
 {
     uint32_t difuseCount = 1;
     uint32_t roughnessCount  = 1;
@@ -72,6 +70,9 @@ void Mesh::Draw(std::shared_ptr<Shader>& shader)
         m_textures[i]->Bind(i);
     }
     glActiveTexture(GL_TEXTURE0);
+
+    glm::mat4 mvp = camera.GetViewAndProjectionMatrix() * m_modelMatrix;
+    shader->SetUniformMat4("u_mvp", mvp);
 
     m_VAO->Bind();
     glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);

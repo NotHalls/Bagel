@@ -2,6 +2,7 @@
 
 #include "BagelMath.hpp"
 #include "BagelEngine.hpp"
+#include "Renderer/Camera.hpp"
 
 
 struct ModelVertice
@@ -24,6 +25,8 @@ private:
     std::shared_ptr<VertexBuffer> m_VBO;
     std::shared_ptr<IndexBuffer> m_IBO;
 
+    glm::mat4 m_modelMatrix;
+
 
 private:
     void init();
@@ -32,12 +35,10 @@ public:
     Mesh(const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
          const std::vector<std::shared_ptr<Texture>>& textures);
 
-    void Draw(std::shared_ptr<Shader>& shader);
+    void Draw(std::shared_ptr<Shader>& shader, Camera& camera);
 
-    // uint32_t GetVAO() { return m_VAO; }
-    // uint32_t GetVBO() { return m_VBO; }
-    // uint32_t GetIBO() { return m_IBO; }
-
+    void SetModelMatrix(const glm::mat4& modelMat) { m_modelMatrix = modelMat; }
+    const glm::mat4& GetModelMatrix() const { return m_modelMatrix; }
 
     static std::shared_ptr<Mesh> Create(
         const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,

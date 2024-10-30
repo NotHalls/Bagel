@@ -1,37 +1,60 @@
-// #pragma once
+#pragma once
 
-// #include <memory>
-// #include <string>
+#include <string>
+#include <vector>
+#include <memory>
 
-// #include <assimp/Importer.hpp>
-// #include <assimp/scene.h>
-// #include <assimp/postprocess.h>
+#include <json.hpp>
 
-// #include "BagelEngine.hpp"
-// #include "Renderer/Model/Mesh.hpp"
+#include "BagelEngine.hpp"
+#include "BagelMath.hpp"
 
-
-// class Model
-// {
-// private:
-//     std::string m_path;
-//     std::vector<Mesh> m_meshes;
+#include "Renderer/Camera.hpp"
+#include "Mesh.hpp"
 
 
-// private:
-//     void loadModel(const std::string& path);
-//     void processNodes(aiNode* node, const aiScene* scene);
-//     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-//     std::vector<std::shared_ptr<Texture>> processMaterials(
-//         aiMaterial* material,
-//         aiTextureType textureType, const std::string& textureTypeString
-//     );
+using json = nlohmann::json;
 
-// public:
-//     Model() {}
-//     Model(const std::string& path);
 
-//     void Draw(Shader& shader);
+class Model
+{
+private:
+    std::string m_filePath;
+    std::vector<unsigned char> m_data;
+    json JSON;
 
-//     static std::unique_ptr<Model> Create(const std::string& path);
-// };
+    std::vector<Mesh> m_meshes;
+    std::vector<std::shared_ptr<Texture>> m_loadedTextures;
+    std::vector<std::string> m_loadedTextureNames;
+
+    std::vector<glm::vec3> m_positions;
+    std::vector<glm::quat> m_rotations;
+    std::vector<glm::vec3> m_scales;
+    std::vector<glm::mat4> m_modelMatrices;
+
+
+private:
+    std::string readFile(const std::string& path);
+    std::vector<unsigned char> getData();
+
+    std::vector<float> getFloats(json accessor);
+    std::vector<uint32_t> getIndices(json accessor);
+    std::vector<std::shared_ptr<Texture>> getTextures();
+
+    std::vector<Mesh> loadMeshes(uint32_t meshIndex);
+    void treverseNode(uint32_t node, glm::mat4 matrix = glm::mat4(1.0f));
+
+    template<typename T, uint32_t N>
+    std::vector<T> groupVec(const std::vector<float>& values);
+    
+    std::vector<ModelVertice> groupVertices(
+        const std::vector<glm::vec3>& positions,
+        const std::vector<glm::vec3>& color,
+        const std::vector<glm::vec2>& texCoords,
+        const std::vector<glm::vec3>& normals);
+
+public:
+    Model(const std::string& path);
+
+    void Draw(std::shared_ptr<Shader>& shader, Camera& camera);
+};
