@@ -60,7 +60,7 @@ void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
     glfwMakeContextCurrent(m_mainWindow);
     glfwSetFramebufferSizeCallback(m_mainWindow, glfwFramebufferResizeCallback);
 
-        if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         throw std::runtime_error("Failed To Load OpenGL From GLAD LOADER");
 }
 

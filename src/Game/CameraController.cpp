@@ -67,3 +67,8 @@ void CameraController::OnMouseMove(float x, float y)
     dir.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
     m_camera.SetLookingTarget(dir);
 }
+
+void CameraController::OnResize(float width, float height)
+{
+    m_camera.SetSize(width, height);
+}

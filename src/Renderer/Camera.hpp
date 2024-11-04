@@ -37,6 +37,8 @@ public:
     float GetHeight() const { return m_height; }
     void SetWidth(float width) { m_width = width; RecalculateProjection(); }
     void SetHeight(float height) { m_height = height; RecalculateProjection(); }
+    void SetSize(float width, float height) { m_width = width; m_height = height;
+        RecalculateProjection(); }
 
     const glm::vec3& GetPosition() const { return m_position; }
     void SetPosition(const glm::vec3& position) { m_position = position; RecalculateView(); }

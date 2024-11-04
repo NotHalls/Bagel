@@ -26,7 +26,6 @@ public:
     virtual ~Window() {}
 
     virtual std::pair<uint32_t, uint32_t> getSize() const = 0;
-    virtual void setSize(std::pair<uint32_t, uint32_t> size) = 0;
 
     virtual void* getWindow() = 0;
 

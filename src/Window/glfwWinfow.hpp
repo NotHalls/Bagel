@@ -17,8 +17,6 @@ private:
     // window size
     virtual std::pair<uint32_t, uint32_t> getSize() const override
     { return {m_glfwWindowInfo.WindowWidth, m_glfwWindowInfo.WindowHeight}; }
-    virtual void setSize(std::pair<uint32_t, uint32_t> size) override
-    { m_glfwWindowInfo.WindowWidth = size.first; m_glfwWindowInfo.WindowHeight = size.second; }
 
     virtual void* getWindow() override { return m_mainWindow; }
     virtual float GetElapsedWindowTime() override { return glfwGetTime(); }

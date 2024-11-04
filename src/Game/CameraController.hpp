@@ -32,4 +32,5 @@ public:
 
     void OnUpdate(float dt);
     void OnMouseMove(float x, float y);
+    void OnResize(float width, float height);
 };
