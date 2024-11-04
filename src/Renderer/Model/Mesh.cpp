@@ -40,7 +40,7 @@ void Mesh::init()
     m_VAO->Unbind();
 }
 
-void Mesh::Draw(std::shared_ptr<Shader>& shader, Camera& camera)
+void Mesh::Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix)
 {
     uint32_t difuseCount = 1;
     uint32_t roughnessCount  = 1;
@@ -71,7 +71,7 @@ void Mesh::Draw(std::shared_ptr<Shader>& shader, Camera& camera)
     }
     glActiveTexture(GL_TEXTURE0);
 
-    glm::mat4 mvp = camera.GetViewAndProjectionMatrix() * m_modelMatrix;
+    glm::mat4 mvp = camera.GetViewAndProjectionMatrix() * modelMatrix;
     shader->SetUniformMat4("u_mvp", mvp);
 
     m_VAO->Bind();

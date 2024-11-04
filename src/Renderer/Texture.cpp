@@ -24,7 +24,7 @@ Texture::~Texture()
 
 void Texture::Init()
 {
-    int width, height, channels;
+    int width, height, channels; 
     stbi_uc* textureData = stbi_load(m_texFile.c_str(), &width, &height, &channels, 0);
 
     ASSERT(textureData, "Failed To Load Image");

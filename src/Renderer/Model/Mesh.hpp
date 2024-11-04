@@ -35,7 +35,7 @@ public:
     Mesh(const std::vector<ModelVertice>& vertices, const std::vector<uint32_t>& indices,
          const std::vector<std::shared_ptr<Texture>>& textures);
 
-    void Draw(std::shared_ptr<Shader>& shader, Camera& camera);
+    void Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix);
 
     void SetModelMatrix(const glm::mat4& modelMat) { m_modelMatrix = modelMat; }
     const glm::mat4& GetModelMatrix() const { return m_modelMatrix; }

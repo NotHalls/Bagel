@@ -23,6 +23,8 @@ Game::Game()
     m_boxTexture = Texture::Create("assets/Textures/Box.png", TextureType::Diffuse);
     m_wedTexture = Texture::Create("assets/Textures/Wed.jpg");
 
+    m_model = Model::Create("assets/models/Monkey/Monkey.fbx");
+
     m_vertices.push_back(ModelVertice{
         glm::vec3(-0.5f, -0.5f, -0.5f),
         glm::vec3(1.0f, 1.0f, 1.0f),
@@ -91,6 +93,8 @@ Game::Game()
 
     m_textures.push_back(m_boxTexture);
 
+    Texture m_sBoxTexture("assets/Textures/Box.png", TextureType::Diffuse);
+    m_sTextures.push_back(m_sBoxTexture);
 }
 
 void Game::Start()
@@ -101,47 +105,29 @@ void Game::Update(double deltaTime)
     glEnable(GL_DEPTH_TEST);
     Renderer::ColorScreen(m_screenColor);
 
-    m_IndexBuffer = IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
-    
-    m_VertexBuffer->SetBufferLayout({
-        { AttribType::Vec3 },   // position
-        { AttribType::Vec3 },   // color
-        { AttribType::Vec2 },   // texCoords
-        { AttribType::Vec3 }    // normals
-    });
-    
-    m_VertexArray->AddVertexBuffer(m_VertexBuffer);
+    handleInput(deltaTime);
+    Input::OnMouseMove(
+        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
 
-    m_model =
+    m_2DShader->Bind();
+
+    glm::mat4 model = glm::mat4(1.0f);
+
+    model =
         glm::translate(glm::mat4(1.0f), m_position) *
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
         glm::scale(glm::mat4(1.0f), m_scale);
 
-    m_mvp = m_camera.GetViewAndProjectionMatrix() * m_model;
+    // Mesh boxMesh(m_vertices, m_indices, m_textures);
+    // boxMesh.SetModelMatrix(model);
+    // boxMesh.Draw(m_2DShader, m_camera, model);
 
-    handleInput(deltaTime);
+    // m_model = Model::Create("assets/models/cat.gltf");
+    // m_model->Draw(m_2DShader, m_camera);
 
-    Input::OnMouseMove(
-        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
-    
-
-    m_boxTexture->Bind(0);
-    m_wedTexture->Bind(1);
-
-    m_2DShader->Bind();
-
-    m_2DShader->SetUniformMat4("u_mvp", m_mvp);
-    m_2DShader->SetUniformVec3("u_color", m_triColor);
-    m_2DShader->SetUniformInt("u_texture", 0);
-    m_2DShader->SetUniformInt("u_texture1", 1);
-
-    Mesh m_boxMesh(m_vertices, m_indices, m_textures);
-    m_boxMesh.SetModelMatrix(m_model);
-    m_boxMesh.Draw(m_2DShader, m_camera);
-
-    // glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(uint32_t), GL_UNSIGNED_INT, nullptr);
+    m_model->Draw(m_2DShader, m_camera, model);
 }
 
 void Game::Destroy()

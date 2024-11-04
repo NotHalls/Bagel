@@ -19,5 +19,5 @@ void main()
     // FragColor = mix(texture(u_texture, o_texCoords), texture(u_texture1, o_texCoords), 0.2)
     //             * vec4(o_color, 0.0f);
                 
-    FragColor = texture(u_texture, o_texCoords);
+    FragColor = texture(Diffuse1, o_texCoords);
 }

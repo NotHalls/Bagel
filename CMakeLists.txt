@@ -27,13 +27,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/${CMAKE_SYSTEM_NAME}
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/libs/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
 
 add_subdirectory(./submodules/glfw)
-# add_subdirectory(./submodules/assimp)
+add_subdirectory(./submodules/assimp)
 
-# set(ASSIMP_BUILD_TESTS OFF)
-# set(ASSIMP_INSTALL OFF)
+set(ASSIMP_BUILD_TESTS OFF)
+set(ASSIMP_INSTALL OFF)
 
-# target_compile_definitions(assimp PUBLIC _CRT_SECURE_NO_WARNINGS)
-# target_compile_options(assimp PUBLIC -Wunknown-pragmas -Wno-unknown-pragmas)
+target_compile_definitions(assimp PUBLIC _CRT_SECURE_NO_WARNINGS)
+target_compile_options(assimp PUBLIC -Wunknown-pragmas -Wno-unknown-pragmas)
 
 add_library(glad STATIC submodules/glad/src/glad.c)
 target_include_directories(glad PUBLIC submodules/glad/include)
@@ -63,14 +63,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     submodules/glfw/include
     submodules/glm/glm
     submodules/stb_image
-    # submodules/assimp/include
+    submodules/assimp/include
     submodules/json
 
     src
     src/Include
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw imgui glad)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw imgui glad assimp)
 
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC GLFW_INCLUDE_NONE)

@@ -51,10 +51,14 @@ public:
     ~Texture();
 
     uint32_t Get() { return m_textureID; }
-    const std::string& GetFilePath() { return m_texFile; }
+    const std::string& GetFilePath() const { return m_texFile; }
+    void SetFilePath(const std::string& filePath) { m_texFile = filePath; }
 
     uint32_t GetWidth() { return m_width; }
     uint32_t GetHeight() { return m_height; }
+
+    uint32_t GetTextureID() const { return m_textureID; }
+    void SetTextureID(uint32_t id) { m_textureID = id; }
 
     TextureType GetTextureType() { return m_textureType; }
     void SetTextureType(TextureType type) { m_textureType = type; }

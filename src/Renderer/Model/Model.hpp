@@ -1,60 +1,58 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <memory>
 
-#include <json.hpp>
+// @TODO: these shouldbe be here
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
-#include "BagelEngine.hpp"
-#include "BagelMath.hpp"
-
-#include "Renderer/Camera.hpp"
 #include "Mesh.hpp"
 
 
-using json = nlohmann::json;
+// // assimp stuff that i dont wanna include in this file
+// struct aiNode;
+// struct aiScene;
+// struct aiMesh;
+// struct aiMaterial;
+// enum aiTextureType;
+
+enum class ModelImportSettings : uint32_t
+{ // these correspond to aiProcess flags
+    None                = 0,
+    Triangulate         = 0x8,
+    FlipUVs             = 0x800000,
+    GenerateNormals     = 0x20,
+    SplitLargeMeshes    = 0x80,
+    OptimizeMeshes      = 0x200000
+};
 
 
 class Model
 {
 private:
-    std::string m_filePath;
-    std::vector<unsigned char> m_data;
-    json JSON;
-
+    std::string m_modelDirectory;
     std::vector<Mesh> m_meshes;
-    std::vector<std::shared_ptr<Texture>> m_loadedTextures;
-    std::vector<std::string> m_loadedTextureNames;
-
-    std::vector<glm::vec3> m_positions;
-    std::vector<glm::quat> m_rotations;
-    std::vector<glm::vec3> m_scales;
-    std::vector<glm::mat4> m_modelMatrices;
+    uint32_t m_modelImportSettings;
 
 
 private:
-    std::string readFile(const std::string& path);
-    std::vector<unsigned char> getData();
-
-    std::vector<float> getFloats(json accessor);
-    std::vector<uint32_t> getIndices(json accessor);
-    std::vector<std::shared_ptr<Texture>> getTextures();
-
-    std::vector<Mesh> loadMeshes(uint32_t meshIndex);
-    void treverseNode(uint32_t node, glm::mat4 matrix = glm::mat4(1.0f));
-
-    template<typename T, uint32_t N>
-    std::vector<T> groupVec(const std::vector<float>& values);
-    
-    std::vector<ModelVertice> groupVertices(
-        const std::vector<glm::vec3>& positions,
-        const std::vector<glm::vec3>& color,
-        const std::vector<glm::vec2>& texCoords,
-        const std::vector<glm::vec3>& normals);
+    void loadModel(const std::string& modelPath);
+    void processNode(aiNode* node, const aiScene* scene);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    std::vector<std::shared_ptr<Texture>> loadMaterialTexture(
+        aiMaterial* material, aiTextureType textureType, TextureType textureTypeEnum);
 
 public:
-    Model(const std::string& path);
+    Model(const std::string& modelPath, uint32_t importSettings);
 
-    void Draw(std::shared_ptr<Shader>& shader, Camera& camera);
+    void Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix);
+    void SetImportSettings(uint32_t flags) { m_modelImportSettings = flags; }
+
+    static std::shared_ptr<Model> Create(
+        const std::string& modelPath,
+        uint32_t importSettings = 
+            static_cast<uint32_t>(ModelImportSettings::Triangulate) |
+            static_cast<uint32_t>(ModelImportSettings::FlipUVs));
 };

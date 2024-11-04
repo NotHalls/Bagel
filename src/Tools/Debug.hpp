@@ -14,10 +14,10 @@
             throw std::runtime_error("ASSERTION OCCURED WITH DESCRIPTION: " + std::string(msg));\
         }\
     }
-#define CheckErrors(x)\
+#define CheckGLErrors(x)\
     clearErrors();\
     x;\
-    ASSERT(checkGLErrors(#x, __FILE__, __LINE__), "\n:(\n");
+    ASSERT(checkGLErrors(__func__, __FILE__, __LINE__), "\n:(\n");
 
 static void clearErrors()
 { while(glGetError() != GL_NO_ERROR); }
