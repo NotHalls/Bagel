@@ -33,7 +33,16 @@ set(ASSIMP_BUILD_TESTS OFF)
 set(ASSIMP_INSTALL OFF)
 
 target_compile_definitions(assimp PUBLIC _CRT_SECURE_NO_WARNINGS)
-target_compile_options(assimp PUBLIC -Wunknown-pragmas -Wno-unknown-pragmas)
+
+# we will set the compile definitions for assimp according to the compiler
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(assimp PUBLIC -Wunknown-pragmas -Wno-unknown-pragmas)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(assimp PUBLIC /W4)
+    set( ASM686 FALSE CACHE INTERNAL "Override ZLIB flag to turn off assembly" FORCE )
+    set( AMD64 FALSE CACHE INTERNAL "Override ZLIB flag to turn off assembly" FORCE )
+endif()
+
 
 add_library(glad STATIC submodules/glad/src/glad.c)
 target_include_directories(glad PUBLIC submodules/glad/include)
