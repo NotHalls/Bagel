@@ -8,6 +8,23 @@
 #include "Tools/Debug.hpp"
 
 
+// private to this file
+aiTextureType GetAssimpTextureType(TextureType type)
+{
+    switch(type)
+    {
+        case TextureType::None:         return aiTextureType_NONE;
+        case TextureType::Diffuse:      return aiTextureType_DIFFUSE;
+        case TextureType::Roughness:    return aiTextureType_DIFFUSE_ROUGHNESS;
+        case TextureType::Metallic:     return aiTextureType_METALNESS;
+        case TextureType::Normal:       return aiTextureType_NORMALS;
+
+        default: return aiTextureType_UNKNOWN;
+    }
+    return aiTextureType_UNKNOWN;
+}
+
+
 std::shared_ptr<Model> Model::Create(const std::string& modelPath, uint32_t importSettings)
 { return std::make_shared<Model>(modelPath, importSettings); }
 
@@ -119,19 +136,19 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
         std::vector<std::shared_ptr<Texture>> diffuseMaps =
-            loadMaterialTexture(material, aiTextureType_DIFFUSE, TextureType::Diffuse);
+            loadMaterialTexture(material, TextureType::Diffuse);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         
         std::vector<std::shared_ptr<Texture>> roughnessMaps =
-            loadMaterialTexture(material, aiTextureType_DIFFUSE_ROUGHNESS, TextureType::Roughness);
+            loadMaterialTexture(material, TextureType::Roughness);
         textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
 
         std::vector<std::shared_ptr<Texture>> metallicMaps =
-            loadMaterialTexture(material, aiTextureType_METALNESS, TextureType::Metallic);
+            loadMaterialTexture(material, TextureType::Metallic);
         textures.insert(textures.end(),metallicMaps.begin(),metallicMaps.end());
 
         std::vector<std::shared_ptr<Texture>> normalMaps =
-            loadMaterialTexture(material, aiTextureType_NORMALS, TextureType::Normal);
+            loadMaterialTexture(material, TextureType::Normal);
         textures.insert(textures.end(),normalMaps.begin(),normalMaps.end());
     }
 
@@ -140,15 +157,14 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 
 std::vector<std::shared_ptr<Texture>> Model::loadMaterialTexture(
-    aiMaterial* material, aiTextureType textureType, TextureType textureTypeEnum)
+    aiMaterial* material, TextureType textureTypeEnum)
 {
     std::vector<std::shared_ptr<Texture>> textures;
-    for(uint32_t i = 0; i < material->GetTextureCount(textureType); i++)
+    for(uint32_t i = 0; i < material->GetTextureCount(GetAssimpTextureType(textureTypeEnum)); i++)
     {
         aiString str;
-        material->GetTexture(textureType, i, &str);
+        material->GetTexture(GetAssimpTextureType(textureTypeEnum), i, &str);
 
-        // Texture texture(m_modelDirectory + "/" + std::string(str.C_Str()), textureTypeEnum);
         std::shared_ptr<Texture> texture = 
         Texture::Create(m_modelDirectory + "/" + std::string(str.C_Str()), textureTypeEnum);
         textures.push_back(texture);

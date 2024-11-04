@@ -13,7 +13,7 @@ struct aiNode;
 struct aiScene;
 struct aiMesh;
 struct aiMaterial;
-enum aiTextureType;
+
 
 enum class ModelImportSettings : uint32_t
 { // these correspond to aiProcess flags
@@ -39,7 +39,7 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<std::shared_ptr<Texture>> loadMaterialTexture(
-        aiMaterial* material, aiTextureType textureType, TextureType textureTypeEnum);
+        aiMaterial* material, TextureType textureTypeEnum);
 
 public:
     Model(const std::string& modelPath, uint32_t importSettings);
