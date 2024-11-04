@@ -11,6 +11,8 @@
 #include "Renderer/Model/Mesh.hpp"
 #include "Renderer/Model/Model.hpp"
 
+#include "Game/CameraController.hpp"
+
 
 class Game : public Component
 {
@@ -21,14 +23,7 @@ private:
     glm::vec3 m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 m_scale    = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    float mouseSensitivity = 0.1;
-    float camSpeed = 5.0f;
-    float yaw = -90.0f;
-    float pitch = 0.0f;
-    float lastX = (float)800/2, lastY = (float)600/2; // should be the window's width/2, height/2
-    bool firstMouse = true;
-
-    Camera m_camera;
+    CameraController m_CameraController;
 
     std::shared_ptr<Shader> m_2DShader;
 
