@@ -19,12 +19,12 @@ Model::Model(const std::string& modelPath, uint32_t importSettings)
     loadModel(modelPath);
 }
 
-void Model::Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix)
+void Model::Draw(
+    const std::shared_ptr<Shader>& shader, const Camera& camera,
+    const glm::mat4& modelMatrix)
 {
     for(Mesh mesh : m_meshes)
-    {
         mesh.Draw(shader, camera, modelMatrix);
-    }
 }
 
 
@@ -32,7 +32,10 @@ void Model::loadModel(const std::string& modelPath)
 {
     Assimp::Importer importer;
     // @BEFORE_COMMIT: does the importSettings work?
-    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(modelPath,
+        m_modelImportSettings |
+        aiProcess_PreTransformVertices |
+        aiProcess_GlobalScale);
 
     ASSERT(scene,
         "Failed To Initialize The Assimp Scene In Model: " + modelPath

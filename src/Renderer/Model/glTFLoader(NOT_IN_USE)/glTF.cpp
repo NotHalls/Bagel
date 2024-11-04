@@ -34,7 +34,7 @@ void glTFModel::Draw(std::shared_ptr<Shader>& shader, Camera& camera)
 
     for(uint32_t i = 0; i < m_meshes.size(); i ++)
     {
-        m_meshes[i].SetModelMatrix(m_modelMatrices[i]);
+        m_meshes[i].SetModelMatrix(m_modelMatrices[i]); // choose one to use man
         m_meshes[i].Draw(shader, camera, m_modelMatrices[i]);
     }
 }

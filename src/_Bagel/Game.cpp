@@ -19,82 +19,8 @@ Game::Game()
         "assets/shaders/2DShader.fragment.glsl"
     }));
 
-    // m_boxTexture = Texture::Create("assets/Textures/Box.png");
-    m_boxTexture = Texture::Create("assets/Textures/Box.png", TextureType::Diffuse);
-    m_wedTexture = Texture::Create("assets/Textures/Wed.jpg");
-
     m_model = Model::Create("assets/models/Monkey/Monkey.fbx");
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(-0.5f, -0.5f, -0.5f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::vec2(0.0f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(0.5f, -0.5f, -0.5f),
-        glm::vec3(0.0f, 0.0f, 1.0f),
-        glm::vec2(1.0f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(0.5f, 0.5f, -0.5f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(-0.5f, 0.5f, -0.5f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec2(0.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(-0.5f, -0.5f, 0.5f),
-        glm::vec3(1.0f, 1.0f, 1.0f),
-        glm::vec2(0.0f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(0.5f, -0.5f, 0.5f),
-        glm::vec3(0.0f, 0.0f, 1.0f),
-        glm::vec2(1.0f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(0.5f, 0.5f, 0.5f),
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec2(1.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_vertices.push_back(ModelVertice{
-        glm::vec3(-0.5f, 0.5f, 0.5f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec2(0.0f, 1.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    });
-
-    m_indices.insert(m_indices.end(), {
-        0, 1, 2, 2, 3, 0,   // front
-        0, 4, 5, 5, 1, 0,   // down
-        4, 5, 6, 6, 7, 4,   // back
-        3, 2, 6, 6, 7, 3,   // top
-        0, 3, 7, 7, 4, 0,   //left
-        1, 5, 6, 6, 2, 1    //right
-    });
-    
-
-    m_textures.push_back(m_boxTexture);
-
-    Texture m_sBoxTexture("assets/Textures/Box.png", TextureType::Diffuse);
-    m_sTextures.push_back(m_sBoxTexture);
+    m_backpack = Model::Create("assets/models/SurvivalBagpack/Survival_BackPack_2.fbx");
 }
 
 void Game::Start()
@@ -112,7 +38,6 @@ void Game::Update(double deltaTime)
     m_2DShader->Bind();
 
     glm::mat4 model = glm::mat4(1.0f);
-
     model =
         glm::translate(glm::mat4(1.0f), m_position) *
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -120,20 +45,16 @@ void Game::Update(double deltaTime)
         glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
         glm::scale(glm::mat4(1.0f), m_scale);
 
-    // Mesh boxMesh(m_vertices, m_indices, m_textures);
-    // boxMesh.SetModelMatrix(model);
-    // boxMesh.Draw(m_2DShader, m_camera, model);
 
-    // m_model = Model::Create("assets/models/cat.gltf");
-    // m_model->Draw(m_2DShader, m_camera);
-
-    m_model->Draw(m_2DShader, m_camera, model);
+    // m_model->Draw(m_2DShader, m_camera, model);
+    m_backpack->Draw(m_2DShader, m_camera, model);
 }
 
 void Game::Destroy()
 {}
 
 
+// @TODO: This should be in the CameraController Class
 void Game::onMouseMove(float x, float y)
 {
     if(firstMouse)

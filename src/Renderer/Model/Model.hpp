@@ -3,20 +3,17 @@
 #include <string>
 #include <memory>
 
-// @TODO: these shouldbe be here
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
+#include "BagelMath.hpp"
 
 #include "Mesh.hpp"
 
 
-// // assimp stuff that i dont wanna include in this file
-// struct aiNode;
-// struct aiScene;
-// struct aiMesh;
-// struct aiMaterial;
-// enum aiTextureType;
+// assimp stuff that i dont wanna include in this file
+struct aiNode;
+struct aiScene;
+struct aiMesh;
+struct aiMaterial;
+enum aiTextureType;
 
 enum class ModelImportSettings : uint32_t
 { // these correspond to aiProcess flags
@@ -47,7 +44,9 @@ private:
 public:
     Model(const std::string& modelPath, uint32_t importSettings);
 
-    void Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix);
+    void Draw(
+        const std::shared_ptr<Shader>& shader, const Camera& camera,
+        const glm::mat4& modelMatrix);
     void SetImportSettings(uint32_t flags) { m_modelImportSettings = flags; }
 
     static std::shared_ptr<Model> Create(

@@ -30,17 +30,10 @@ private:
 
     Camera m_camera;
 
-    std::shared_ptr<Texture> m_boxTexture;
-    std::shared_ptr<Texture> m_wedTexture;
-
-    std::vector<ModelVertice> m_vertices;
-    std::vector<uint32_t> m_indices;
-    std::vector<std::shared_ptr<Texture>> m_textures;
-    std::vector<Texture> m_sTextures;
-
     std::shared_ptr<Shader> m_2DShader;
 
     std::shared_ptr<Model> m_model;
+    std::shared_ptr<Model> m_backpack;
 
 
 private:
