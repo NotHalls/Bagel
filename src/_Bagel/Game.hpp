@@ -32,8 +32,12 @@ private:
 
     std::shared_ptr<Shader> m_2DShader;
 
+    std::shared_ptr<Texture> m_boxTexture;
+
     std::shared_ptr<Model> m_model;
     std::shared_ptr<Model> m_backpack;
+
+    std::shared_ptr<Model> m_box;
 
 
 private:

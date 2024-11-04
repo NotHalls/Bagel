@@ -25,6 +25,12 @@ enum class ModelImportSettings : uint32_t
     OptimizeMeshes      = 0x200000
 };
 
+enum class DefaultModels
+{
+    Plane   = 0,
+    Cube    = 1
+};
+
 
 class Model
 {
@@ -41,8 +47,15 @@ private:
     std::vector<std::shared_ptr<Texture>> loadMaterialTexture(
         aiMaterial* material, TextureType textureTypeEnum);
 
+    void createPlane(uint32_t importSettings,
+        const std::shared_ptr<Texture>& texture);
+    void createCube(uint32_t importSettings,
+        const std::shared_ptr<Texture>& texture);
+
 public:
     Model(const std::string& modelPath, uint32_t importSettings);
+    Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
+        uint32_t importSettings);
 
     void Draw(
         const std::shared_ptr<Shader>& shader, const Camera& camera,
@@ -51,6 +64,13 @@ public:
 
     static std::shared_ptr<Model> Create(
         const std::string& modelPath,
+        uint32_t importSettings = 
+            static_cast<uint32_t>(ModelImportSettings::Triangulate) |
+            static_cast<uint32_t>(ModelImportSettings::FlipUVs));
+
+    static std::shared_ptr<Model> Create(
+        DefaultModels model,
+        const std::shared_ptr<Texture>& texture,
         uint32_t importSettings = 
             static_cast<uint32_t>(ModelImportSettings::Triangulate) |
             static_cast<uint32_t>(ModelImportSettings::FlipUVs));

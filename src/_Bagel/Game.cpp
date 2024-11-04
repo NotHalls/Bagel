@@ -21,6 +21,12 @@ Game::Game()
 
     m_model = Model::Create("assets/models/Monkey/Monkey.fbx");
     m_backpack = Model::Create("assets/models/SurvivalBagpack/Survival_BackPack_2.fbx");
+
+    m_boxTexture = Texture::Create("assets/Textures/Box.png", TextureType::Diffuse);
+
+    // @TODO: create a DefaultModel with only color.
+    // maybe we can add that when we have materials implemented
+    m_box = Model::Create(DefaultModels::Plane, m_boxTexture);
 }
 
 void Game::Start()
@@ -46,8 +52,9 @@ void Game::Update(double deltaTime)
         glm::scale(glm::mat4(1.0f), m_scale);
 
 
-    // m_model->Draw(m_2DShader, m_camera, model);
+    m_model->Draw(m_2DShader, m_camera, model);
     m_backpack->Draw(m_2DShader, m_camera, model);
+    m_box->Draw(m_2DShader, m_camera, model);
 }
 
 void Game::Destroy()

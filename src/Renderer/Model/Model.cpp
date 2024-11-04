@@ -28,12 +28,33 @@ aiTextureType GetAssimpTextureType(TextureType type)
 std::shared_ptr<Model> Model::Create(const std::string& modelPath, uint32_t importSettings)
 { return std::make_shared<Model>(modelPath, importSettings); }
 
+// this is to create basic models
+std::shared_ptr<Model> Model::Create(DefaultModels model,
+    const std::shared_ptr<Texture>& texture,
+    uint32_t importSettings)
+{ return std::make_shared<Model>(model, texture, importSettings); }
+
 
 Model::Model(const std::string& modelPath, uint32_t importSettings)
     : m_modelImportSettings(importSettings)
 {
     m_modelDirectory = modelPath.substr(0, modelPath.find_last_of("/"));
     loadModel(modelPath);
+}
+
+// this is where we call the right functions to setup those basic meshes
+Model::Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
+        uint32_t importSettings)
+{
+    switch(model)
+    {
+        case DefaultModels::Plane:  createPlane(importSettings, texture);
+        case DefaultModels::Cube:   createCube(importSettings, texture);
+
+        default: ASSERT(true, "The Selected Default Model Doesn't Exist");
+    }
+
+    ASSERT(true, "The Selected Default Model Doesn't Exist");
 }
 
 void Model::Draw(
@@ -170,4 +191,56 @@ std::vector<std::shared_ptr<Texture>> Model::loadMaterialTexture(
         textures.push_back(texture);
     }
     return textures;
+}
+
+
+void Model::createPlane(uint32_t importSettings,
+    const std::shared_ptr<Texture>& texture)
+{
+    // @TODO: well we have a fixed amount for a plane so why not use std::array
+    // i will do that later actually
+
+    std::vector<ModelVertice> planeVertices;
+    planeVertices.push_back(ModelVertice{
+        { glm::vec3(-2.5f, 0.0f, -2.5f) },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) },
+        { glm::vec2( 0.0f, 0.0f)        },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) }
+    });
+    planeVertices.push_back(ModelVertice{
+        { glm::vec3(2.5f,  0.0f, -2.5f) },
+        { glm::vec3(1.0f,  1.0f,  1.0f) },
+        { glm::vec2(1.0f,  0.0f)        },
+        { glm::vec3(1.0f,  1.0f,  1.0f) }
+    });
+    planeVertices.push_back(ModelVertice{
+        { glm::vec3(-2.5f, 0.0f,  2.5f) },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) },
+        { glm::vec2( 0.0f, 1.0f)        },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) }
+    });
+    planeVertices.push_back(ModelVertice{
+        { glm::vec3(2.5f, 0.0f,  2.5f) },
+        { glm::vec3(1.0f, 1.0f,  1.0f) },
+        { glm::vec2(1.0f, 1.0f)        },
+        { glm::vec3(1.0f, 1.0f,  1.0f) }
+    });
+
+    std::vector<uint32_t> planeIndices;
+    planeIndices.insert(planeIndices.end(), {
+        0, 1, 2,
+        2, 3, 1
+    });
+
+    std::vector<std::shared_ptr<Texture>> planeTextures;
+    planeTextures.push_back(texture);
+
+    Mesh mesh(planeVertices, planeIndices, planeTextures);
+    m_meshes.push_back(mesh);
+}
+
+void Model::createCube(uint32_t importSettings,
+    const std::shared_ptr<Texture>& texture)
+{
+    
 }
