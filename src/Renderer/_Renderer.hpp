@@ -7,4 +7,5 @@ class Renderer
 {
 public:
     static void ColorScreen(const glm::vec4& color);
+    static void ResizeRenderer(int width, int height);
 };

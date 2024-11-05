@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <string>
 #include <utility>
+#include <functional>
+
+#include "Events/Events.hpp"
 
 
 struct WindowInformation
@@ -23,14 +26,18 @@ struct WindowInformation
 class Window
 {
 public:
+    using FunctionCallback = std::function<void(Event&)>;
+
+public:
     virtual ~Window() {}
 
     virtual std::pair<uint32_t, uint32_t> getSize() const = 0;
 
     virtual void* getWindow() = 0;
 
+    virtual void SetCallbackFunction(const FunctionCallback& callback) = 0;
+
     virtual void Update() = 0;
-    virtual void Close() = 0;
 
     virtual float GetElapsedWindowTime() = 0;
 

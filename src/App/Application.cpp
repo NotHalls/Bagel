@@ -1,8 +1,12 @@
+#include <iostream>
 #include <stdexcept>
 #include <string>
 
 #include "Application.hpp"
 #include "Component.hpp"
+#include "Renderer/_Renderer.hpp"
+
+#include "Events/WindowEvents.hpp"
 
 
 Application* Application::m_app = nullptr;
@@ -14,6 +18,17 @@ Application::Application(const std::string& appName)
     m_app = this;
 
     m_window = std::unique_ptr<Window>(Window::CreateWindow(WindowInformation(appName)));
+    m_window->SetCallbackFunction
+        (std::bind(&Application::ProcessEvents, this, std::placeholders::_1));
+}
+
+void Application::ProcessEvents(Event& event)
+{
+    EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<WindowResizeEvent>
+    (std::bind(&Application::Resize, this, std::placeholders::_1));
+    dispatcher.Dispatch<WindowCloseEvent>
+    (std::bind(&Application::Close, this, std::placeholders::_1));
 }
 
 void Application::Run()
@@ -42,10 +57,18 @@ void Application::Run()
     }
 }
 
-void Application::Close()
+bool Application::Resize(WindowResizeEvent& windowResizeEvent)
 {
-    m_window->Close();
+    Renderer::ResizeRenderer(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+
+    return false;
+}
+
+bool Application::Close(WindowCloseEvent& windowCloseEvent)
+{
     CloseApplication = true;
+    
+    return false;
 }
 
 

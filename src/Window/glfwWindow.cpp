@@ -8,6 +8,8 @@
 #include "glfwWinfow.hpp"
 #include "App/Application.hpp"
 
+#include "Events/WindowEvents.hpp"
+
 
 void GlfwErrorCallback(int error, const char* description)
 {
@@ -15,11 +17,6 @@ void GlfwErrorCallback(int error, const char* description)
               << error << " With The Description: "
               << description << std::endl;
 }
-void glfwFramebufferResizeCallback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 
 Window* Window::CreateWindow(const WindowInformation& windowInfo)
 {
@@ -30,6 +27,8 @@ GlfwWindow::GlfwWindow(const WindowInformation& windowInfo)
 {
     initializeGLFW(windowInfo);
 }
+GlfwWindow::~GlfwWindow()
+{ CloseWindow(); }
 
 
 void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
@@ -55,23 +54,47 @@ void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
     {
         std::cout << "Failed To Create GLFW Window" << std::endl;
         glfwSetErrorCallback(GlfwErrorCallback);
-        Close();
+        CloseWindow();
     }
     glfwMakeContextCurrent(m_mainWindow);
-    glfwSetFramebufferSizeCallback(m_mainWindow, glfwFramebufferResizeCallback);
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         throw std::runtime_error("Failed To Load OpenGL From GLAD LOADER");
+
+    glfwSetWindowUserPointer(m_mainWindow, &m_glfwWindowInfo);
+    
+    // WINDOW SPESIFIC EVENTS
+    glfwSetWindowSizeCallback(m_mainWindow, [](GLFWwindow* window, int width, int height){
+        glfwWindowInformation& windowInfo =
+            *(glfwWindowInformation*)glfwGetWindowUserPointer(window);
+        windowInfo.WindowWidth = width;
+        windowInfo.WindowHeight = height;
+
+        WindowResizeEvent windowResizeEvent(width, height);
+        windowInfo.CallbackFunc(windowResizeEvent);
+    });
+
+    glfwSetWindowCloseCallback(m_mainWindow, [](GLFWwindow* window){
+        glfwWindowInformation& windowInfo =
+            *(glfwWindowInformation*)glfwGetWindowUserPointer(window);
+
+        WindowCloseEvent windowCloseEvent;
+        windowInfo.CallbackFunc(windowCloseEvent);
+    });
+
+    // KEYBOARD SPESIFIC EVENTS
+    // glfwSetKeyCallback(m_mainWindow,
+    //     [](GLFWwindow* window, int key, int scancode, int action, int mods){
+            
+    //     });
 }
 
 void GlfwWindow::Update()
 {
     glfwSwapBuffers(m_mainWindow);
     glfwPollEvents();
-
-    if(glfwWindowShouldClose(m_mainWindow)) { Application::Get().Close(); }
 }
-void GlfwWindow::Close()
+void GlfwWindow::CloseWindow()
 {
     glfwDestroyWindow(m_mainWindow);
     glfwTerminate();

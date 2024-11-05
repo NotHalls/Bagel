@@ -7,6 +7,9 @@
 #include "Component.hpp"
 #include "ComponentList.hpp"
 
+#include "Events/Events.hpp"
+#include "Events/WindowEvents.hpp"
+
 
 class Application
 {
@@ -26,7 +29,10 @@ public:
     Window& GetWindow() { return *m_window; }
 
     void Run();
-    void Close();
+    void ProcessEvents(Event& event);
+
+    bool Resize(WindowResizeEvent& windowResizeEvent);
+    bool Close(WindowCloseEvent& windowCloseEvent);
 
     void AddComponent(Component* component);
     void RemoveComponent(Component* component);
