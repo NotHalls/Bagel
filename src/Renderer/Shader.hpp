@@ -1,21 +1,22 @@
 #pragma once
 
+#include <string>
+#include <vector>
+#include <memory>
+
 #include "ext/matrix_float4x4.hpp"
 #include "ext/vector_float3.hpp"
 #include "ext/vector_int3.hpp"
-#include <string>
-#include <vector>
 
 
 class Shader
 {
 private:
     uint32_t m_shaderProgram;
+    std::vector<std::string> m_filePaths;
 
 
-private:
-    std::string ReadFromFile(const std::string& filePath);
-    
+private:    
     std::string readFile(const std::string& filePath);
     void processShader(const std::vector<std::string>& shaderFiles);
 
@@ -29,6 +30,8 @@ public:
     void Bind();
     void Unbind();
 
+    const std::vector<std::string>& GetFilePaths() const { return m_filePaths; };
+
     void SetUniformFloat(const std::string& uniformName, float value);
     void SetUniformInt(const std::string& uniformName, int value);
 
@@ -36,8 +39,6 @@ public:
     void SetUniformIVec3(const std::string& uniformName, const glm::ivec3& value);
 
     void SetUniformMat4(const std::string& uniformName, const glm::mat4& value);
-
-
     
-    static Shader* CreateShader(const std::vector<std::string>& shaderFiles);
+    static std::shared_ptr<Shader> CreateShader(const std::vector<std::string>& shaderFiles);
 };

@@ -25,8 +25,6 @@ private:
 
     CameraController m_CameraController;
 
-    std::shared_ptr<Shader> m_2DShader;
-
     std::shared_ptr<Texture> m_boxTexture;
 
     std::shared_ptr<Model> m_model;
@@ -37,7 +35,6 @@ private:
 
 private:
     void onMouseMove(float x, float y);
-    void handleInput(double deltaTime);
 
 public:
     Game();

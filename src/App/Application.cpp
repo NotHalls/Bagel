@@ -4,6 +4,7 @@
 
 #include "Application.hpp"
 #include "Component.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Renderer/RenderCommands.hpp"
 
 #include "Events/WindowEvents.hpp"
@@ -19,6 +20,12 @@ Application::Application(const std::string& appName)
 
     m_window = std::unique_ptr<Window>(Window::CreateWindow(WindowInformation(appName)));
     m_window->SetCallbackFunction(BIND_EVENT(Application::ProcessEvents));
+
+    RenderCommand::Init(m_window->getSize().first, m_window->getSize().second);
+    Renderer::Init({
+        "assets/shaders/2DShader.vertex.glsl",
+        "assets/shaders/2DShader.fragment.glsl"
+    });
 }
 
 void Application::ProcessEvents(Event& event)

@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "BagelTools.hpp"
+#include "Renderer/Renderer.hpp"
 
 
 std::shared_ptr<Mesh> Mesh::Create(
@@ -40,13 +41,12 @@ void Mesh::init()
     m_VAO->Unbind();
 }
 
-void Mesh::Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, const glm::mat4& modelMatrix)
+void Mesh::Draw(const glm::mat4& modelMatrix)
 {
     uint32_t difuseCount = 1;
     uint32_t roughnessCount  = 1;
     uint32_t metallicCount = 1;
     uint32_t normalCount = 1;
-
 
     for(uint32_t i = 0; i < m_textures.size(); i++)
     {
@@ -66,13 +66,13 @@ void Mesh::Draw(const std::shared_ptr<Shader>& shader, const Camera& camera, con
         else
             ASSERT(false, "Unknown Texture Type Found While Processing Data To Shader");
 
-        shader->SetUniformInt(textureTypeString + textureNumberOffset, i);
+        Renderer::GetSceneData().SceneShader->SetUniformInt(textureTypeString + textureNumberOffset, i);
         m_textures[i]->Bind(i);
     }
     glActiveTexture(GL_TEXTURE0);
 
-    glm::mat4 mvp = camera.GetViewAndProjectionMatrix() * modelMatrix;
-    shader->SetUniformMat4("u_mvp", mvp);
+    glm::mat4 mvp = Renderer::GetSceneData().ViewProjectionMatrix * modelMatrix;
+    Renderer::GetSceneData().SceneShader->SetUniformMat4("u_mvp", mvp);
 
     m_VAO->Bind();
     glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);

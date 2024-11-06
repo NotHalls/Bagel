@@ -15,13 +15,14 @@
 #include "Tools/Debug.hpp"
 
 
-Shader* Shader::CreateShader(const std::vector<std::string>& shaderFiles)
+std::shared_ptr<Shader> Shader::CreateShader(const std::vector<std::string>& shaderFiles)
 {
-    return new Shader(shaderFiles);
+    return std::make_shared<Shader>(shaderFiles);
 }
 
 
 Shader::Shader(const std::vector<std::string>& shaderFiles)
+    : m_filePaths(shaderFiles)
 {
     processShader(shaderFiles);
 }

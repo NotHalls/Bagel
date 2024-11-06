@@ -57,9 +57,7 @@ public:
     Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
         uint32_t importSettings);
 
-    void Draw(
-        const std::shared_ptr<Shader>& shader, const Camera& camera,
-        const glm::mat4& modelMatrix);
+    void Draw(const glm::mat4& modelMatrix);
     void SetImportSettings(uint32_t flags) { m_modelImportSettings = flags; }
 
     static std::shared_ptr<Model> Create(

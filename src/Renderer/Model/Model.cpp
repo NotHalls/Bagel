@@ -57,12 +57,10 @@ Model::Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
     ASSERT(true, "The Selected Default Model Doesn't Exist");
 }
 
-void Model::Draw(
-    const std::shared_ptr<Shader>& shader, const Camera& camera,
-    const glm::mat4& modelMatrix)
+void Model::Draw(const glm::mat4& modelMatrix)
 {
     for(Mesh mesh : m_meshes)
-        mesh.Draw(shader, camera, modelMatrix);
+        mesh.Draw(modelMatrix);
 }
 
 
@@ -202,25 +200,25 @@ void Model::createPlane(uint32_t importSettings,
 
     std::vector<ModelVertice> planeVertices;
     planeVertices.push_back(ModelVertice{
-        { glm::vec3(-2.5f, 0.0f, -2.5f) },
+        { glm::vec3(-1.0f, 0.0f, -1.0f) },
         { glm::vec3( 1.0f, 1.0f,  1.0f) },
         { glm::vec2( 0.0f, 0.0f)        },
         { glm::vec3( 1.0f, 1.0f,  1.0f) }
     });
     planeVertices.push_back(ModelVertice{
-        { glm::vec3(2.5f,  0.0f, -2.5f) },
+        { glm::vec3(1.0f,  0.0f, -1.0f) },
         { glm::vec3(1.0f,  1.0f,  1.0f) },
         { glm::vec2(1.0f,  0.0f)        },
         { glm::vec3(1.0f,  1.0f,  1.0f) }
     });
     planeVertices.push_back(ModelVertice{
-        { glm::vec3(-2.5f, 0.0f,  2.5f) },
+        { glm::vec3(-1.0f, 0.0f,  1.0f) },
         { glm::vec3( 1.0f, 1.0f,  1.0f) },
         { glm::vec2( 0.0f, 1.0f)        },
         { glm::vec3( 1.0f, 1.0f,  1.0f) }
     });
     planeVertices.push_back(ModelVertice{
-        { glm::vec3(2.5f, 0.0f,  2.5f) },
+        { glm::vec3(1.0f, 0.0f,  1.0f) },
         { glm::vec3(1.0f, 1.0f,  1.0f) },
         { glm::vec2(1.0f, 1.0f)        },
         { glm::vec3(1.0f, 1.0f,  1.0f) }

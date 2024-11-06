@@ -1,8 +1,15 @@
 #include <glad/glad.h>
 
 #include "RenderCommands.hpp"
+#include "Renderer/Renderer.hpp"
+
 #include "ext/vector_float4.hpp"
 
+
+void RenderCommand::Init(int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 void RenderCommand::ColorScreen(const glm::vec4& color)
 {
