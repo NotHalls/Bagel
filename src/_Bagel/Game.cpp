@@ -35,7 +35,7 @@ void Game::Start()
 void Game::Update(double deltaTime)
 {
     glEnable(GL_DEPTH_TEST);
-    Renderer::ColorScreen(m_screenColor);
+    RenderCommand::ColorScreen(m_screenColor);
 
     m_CameraController.OnUpdate((float)deltaTime);
     Input::OnMouseMove(

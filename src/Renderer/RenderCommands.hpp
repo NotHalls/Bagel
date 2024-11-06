@@ -3,7 +3,7 @@
 #include "ext/vector_float4.hpp"
 
 
-class Renderer
+class RenderCommand
 {
 public:
     static void ColorScreen(const glm::vec4& color);

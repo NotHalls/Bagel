@@ -4,7 +4,7 @@
 
 #include "Application.hpp"
 #include "Component.hpp"
-#include "Renderer/_Renderer.hpp"
+#include "Renderer/RenderCommands.hpp"
 
 #include "Events/WindowEvents.hpp"
 
@@ -56,7 +56,7 @@ void Application::Run()
 
 bool Application::Resize(WindowResizeEvent& windowResizeEvent)
 {
-    Renderer::ResizeRenderer(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
+    RenderCommand::ResizeRenderer(windowResizeEvent.GetWidth(), windowResizeEvent.GetHeight());
 
     return false;
 }
