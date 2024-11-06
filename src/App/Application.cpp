@@ -18,17 +18,14 @@ Application::Application(const std::string& appName)
     m_app = this;
 
     m_window = std::unique_ptr<Window>(Window::CreateWindow(WindowInformation(appName)));
-    m_window->SetCallbackFunction
-        (std::bind(&Application::ProcessEvents, this, std::placeholders::_1));
+    m_window->SetCallbackFunction(BIND_EVENT(Application::ProcessEvents));
 }
 
 void Application::ProcessEvents(Event& event)
 {
     EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<WindowResizeEvent>
-    (std::bind(&Application::Resize, this, std::placeholders::_1));
-    dispatcher.Dispatch<WindowCloseEvent>
-    (std::bind(&Application::Close, this, std::placeholders::_1));
+    dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT(Application::Resize));
+    dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT(Application::Close));
 }
 
 void Application::Run()

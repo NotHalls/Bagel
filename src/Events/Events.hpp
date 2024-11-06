@@ -19,6 +19,8 @@ enum class EventType
 \
                             virtual std::string GetEventTypeString() const override\
                             { return #type; }
+
+#define BIND_EVENT(x) std::bind(&x, this, std::placeholders::_1)
                             
 
 class Event
