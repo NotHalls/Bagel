@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Application.hpp"
-#include "Component.hpp"
+#include "Layer.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/RenderCommands.hpp"
 
@@ -37,9 +37,9 @@ void Application::ProcessEvents(Event& event)
 
 void Application::Run()
 {
-    for(Component* component : m_components)
+    for(Layer* layer : m_layerLists)
     {
-        component->Start();
+        layer->Start();
     }
 
     float lastTime = 0.0f;
@@ -52,11 +52,11 @@ void Application::Run()
 
         m_window->Update();
         
-        // we will call update from the master Component class
-        //which will call all of its child component
-        for(Component* component : m_components)
+        // we will call update from the master Layer class
+        //which will call all of its child layer
+        for(Layer* layer : m_layerLists)
         {
-            component->Update(dt);
+            layer->Update(dt);
         }
     }
 }
@@ -76,7 +76,7 @@ bool Application::Close(WindowCloseEvent& windowCloseEvent)
 }
 
 
-void Application::AddComponent(Component* component)
-{ m_components.AddComponent(component); }
-void Application::RemoveComponent(Component* component)
-{ m_components.RemoveComponent(component); }
+void Application::AddLayer(Layer* layer)
+{ m_layerLists.AddLayer(layer); }
+void Application::RemoveLayer(Layer* layer)
+{ m_layerLists.RemoveLayer(layer); }

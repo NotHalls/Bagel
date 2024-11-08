@@ -4,8 +4,8 @@
 #include <string>
 
 #include "Window/Window.hpp"
-#include "Component.hpp"
-#include "ComponentList.hpp"
+#include "Layer.hpp"
+#include "LayerList.hpp"
 
 #include "Events/Events.hpp"
 #include "Events/WindowEvents.hpp"
@@ -19,7 +19,7 @@ private:
 
     std::unique_ptr<Window> m_window;
 
-    ComponentList m_components;
+    LayerList m_layerLists;
 
 
 public:
@@ -34,8 +34,8 @@ public:
     bool Resize(WindowResizeEvent& windowResizeEvent);
     bool Close(WindowCloseEvent& windowCloseEvent);
 
-    void AddComponent(Component* component);
-    void RemoveComponent(Component* component);
+    void AddLayer(Layer* layer);
+    void RemoveLayer(Layer* layer);
 };
 
 Application* CreateApp();

@@ -13,7 +13,7 @@
 
 
 Game::Game()
-    : Component("Game"), m_CameraController(45.0f, 800.0f, 600.0f)
+    : Layer("Game"), m_CameraController(45.0f, 800.0f, 600.0f)
 {
     m_model = Model::Create("assets/models/Monkey/Monkey.fbx");
     m_backpack = Model::Create("assets/models/SurvivalBagpack/Survival_BackPack_2.fbx");

@@ -3,17 +3,17 @@
 #include <string>
 
 
-class Component
+class Layer
 {
 public:
-    std::string ComponentName;
+    std::string LayerName;
 
 
 public:
-    Component(const std::string& name)
-        : ComponentName(name)
+    Layer(const std::string& name)
+        : LayerName(name)
     {}
-    virtual ~Component() {}
+    virtual ~Layer() {}
 
     virtual void Start() {}
     virtual void Update(double deltaTime) {}

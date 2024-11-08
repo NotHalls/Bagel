@@ -14,7 +14,7 @@
 #include "Game/CameraController.hpp"
 
 
-class Game : public Component
+class Game : public Layer
 {
 private:
     glm::vec4 m_screenColor = {0.1f, 0.1f, 0.1f, 1.0f};

@@ -9,7 +9,7 @@ public:
     GameApp()
         : Application("Bagel")
     {
-        AddComponent(new Game());
+        AddLayer(new Game());
     }
 };
 

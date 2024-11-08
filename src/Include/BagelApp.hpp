@@ -1,5 +1,5 @@
 #pragma once
 
 #include "App/Application.hpp"
-#include "App/Component.hpp"
-#include "App/ComponentList.hpp"
+#include "App/Layer.hpp"
+#include "App/LayerList.hpp"
