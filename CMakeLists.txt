@@ -64,6 +64,7 @@ target_include_directories(imgui PUBLIC submodules/imgui)
 file(GLOB_RECURSE MAIN_SOURCES "./src/*.cpp")
 file(GLOB_RECURSE STBI_SOURCES "submodules/stb_image/*.cpp")
 file(GLOB RECURSE JSON_SOURCES "submodules/stb_image/*.cpp")
+file(GLOB RECURSE ENTT_SOURCES "submodules/enTT/entt.cpp")
 
 
 add_executable(${PROJECT_NAME} ${MAIN_SOURCES} ${STBI_SOURCES} ${JSON_SOURCES})
@@ -74,6 +75,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     submodules/stb_image
     submodules/assimp/include
     submodules/json
+    submodules/enTT
 
     src
     src/Include
