@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "BagelMath.hpp"
-#include "BagelGame.hpp"
 #include "BagelEngine.hpp"
 #include "BagelApp.hpp"
 
