@@ -34,8 +34,6 @@ void Game::Update(double deltaTime)
     RenderCommand::ColorScreen(m_screenColor);
 
     m_CameraController.OnUpdate((float)deltaTime);
-    // Input::OnMouseMove(
-    //     std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
 
     m_model->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
     m_backpack->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};

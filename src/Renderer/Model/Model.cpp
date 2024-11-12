@@ -213,9 +213,6 @@ std::vector<std::shared_ptr<Texture>> Model::loadMaterialTexture(
 void Model::createPlane(uint32_t importSettings,
     const std::shared_ptr<Texture>& texture)
 {
-    // @TODO: well we have a fixed amount for a plane so why not use std::array
-    // i will do that later actually
-
     std::vector<ModelVertice> planeVertices;
     planeVertices.push_back(ModelVertice{
         { glm::vec3(-1.0f, 0.0f, -1.0f) },
