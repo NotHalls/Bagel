@@ -28,6 +28,8 @@ private:
 
     std::shared_ptr<Model> m_box;
 
+    std::vector<std::shared_ptr<Model>> m_WOW;
+
 
 private:
     bool onMouseMove(MouseMoveEvent& mouseMoveEvent);

@@ -24,7 +24,21 @@ Game::Game()
 }
 
 void Game::Start()
-{}
+{
+    // WOW!!! THE PERFORMENCE IS... ASS PROBABLY
+    // CURNT MODELS: 100 * 100 with 4 vertices (planes)
+    for(int i = 0; i < 100; i++)
+    {
+        for(int j = 0; j < 100; j++)
+        {
+            std::shared_ptr<Model> model = Model::Create(DefaultModels::Plane, m_boxTexture);
+            model->GetTransform().Position = glm::vec3((float)i * 2.5f, (float)j * 2.5f, 0.0f);
+            model->GetTransform().Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+
+            m_WOW.push_back(model);
+        }
+    }
+}
 
 void Game::Update(double deltaTime)
 {
@@ -38,11 +52,18 @@ void Game::Update(double deltaTime)
 
     Renderer::StartScene(m_CameraController.GetCamera());
     {
-        m_model->Draw();
-        m_backpack->Draw();
-        m_box->Draw();
+        // m_model->Draw();
+        // m_backpack->Draw();
+        // m_box->Draw();
+
+        for(auto& wow : m_WOW)
+        {
+            wow->Draw();
+        }
     }
     Renderer::EndScene();
+
+    std::cout << 1 / deltaTime << "\n";
 }
 
 void Game::ProcessEvent(Event& event)
@@ -57,7 +78,6 @@ void Game::Destroy()
 
 bool Game::onMouseMove(MouseMoveEvent& mouseMoveEvent)
 {
-    std::cout << mouseMoveEvent.ToString() << "\n";
     m_CameraController.OnMouseMove(mouseMoveEvent.GetMouseAxis());
 
     return false;
