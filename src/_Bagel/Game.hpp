@@ -18,10 +18,6 @@ class Game : public Layer
 private:
     glm::vec4 m_screenColor = {0.1f, 0.1f, 0.1f, 1.0f};
 
-    glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 m_scale    = glm::vec3(1.0f, 1.0f, 1.0f);
-
     CameraController m_CameraController;
 
     std::shared_ptr<Texture> m_boxTexture;

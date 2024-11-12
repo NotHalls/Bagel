@@ -37,22 +37,15 @@ void Game::Update(double deltaTime)
     Input::OnMouseMove(
         std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model =
-        glm::translate(glm::mat4(1.0f), m_position) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f), glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)) *
-        glm::scale(glm::mat4(1.0f), m_scale
-    );
-
-    m_position.x = sin(Time::GetElapsedTime());
+    m_model->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
+    m_backpack->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
+    m_box->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
 
     Renderer::StartScene(m_CameraController.GetCamera());
     {
-        m_model->Draw(model);
-        m_backpack->Draw(model);
-        m_box->Draw(model);
+        m_model->Draw();
+        m_backpack->Draw();
+        m_box->Draw();
     }
     Renderer::EndScene();
 }

@@ -39,6 +39,18 @@ private:
     std::vector<Mesh> m_meshes;
     uint32_t m_modelImportSettings;
 
+public:
+    // should probably have an component system for these kind of stuff
+    // but this project is about learning rendering
+    // not anything else i gotta remember that
+    struct Transform
+    {
+        glm::vec3 Position = glm::vec3(0.0f);
+        glm::vec3 Rotation = glm::vec3(0.0f);
+        glm::vec3 Scale    = glm::vec3(1.0f);
+    };
+    private: Transform m_transform;
+
 
 private:
     void loadModel(const std::string& modelPath);
@@ -57,7 +69,12 @@ public:
     Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
         uint32_t importSettings);
 
-    void Draw(const glm::mat4& modelMatrix);
+    // same comment i wrote while declaring transform variables
+    Transform& GetTransform() { return m_transform; }
+    const Transform& GetTransform() const { return m_transform; }
+    void SetTransform(const Transform& transform) { m_transform = transform; }
+
+    void Draw();
     void SetImportSettings(uint32_t flags) { m_modelImportSettings = flags; }
 
     static std::shared_ptr<Model> Create(

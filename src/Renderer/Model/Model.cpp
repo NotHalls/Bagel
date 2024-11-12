@@ -57,8 +57,26 @@ Model::Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
     ASSERT(true, "The Selected Default Model Doesn't Exist");
 }
 
-void Model::Draw(const glm::mat4& modelMatrix)
+void Model::Draw()
 {
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+
+    glm::mat4 rotation =
+        glm::rotate(glm::mat4(1.0f), 
+            glm::radians(m_transform.Rotation.x),
+            glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f),
+            glm::radians(m_transform.Rotation.y),
+            glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f),
+            glm::radians(m_transform.Rotation.z),
+            glm::vec3(0.0f, 0.0f, 1.0f));
+
+    modelMatrix =
+        glm::translate(glm::mat4(1.0f), m_transform.Position) *
+        rotation *
+        glm::scale(glm::mat4(1.0f), m_transform.Scale);
+
     for(Mesh mesh : m_meshes)
         mesh.Draw(modelMatrix);
 }
