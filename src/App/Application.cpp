@@ -51,7 +51,7 @@ void Application::Run()
         lastTime = time;
 
         m_window->Update();
-        
+
         // we will call update from the master Layer class
         //which will call all of its child layer
         for(Layer* layer : m_layerLists)
@@ -71,7 +71,7 @@ bool Application::Resize(WindowResizeEvent& windowResizeEvent)
 bool Application::Close(WindowCloseEvent& windowCloseEvent)
 {
     CloseApplication = true;
-    
+
     return false;
 }
 
