@@ -9,6 +9,7 @@
 #include "App/Application.hpp"
 
 #include "Events/WindowEvents.hpp"
+#include "Events/InputEvents.hpp"
 
 
 void GlfwErrorCallback(int error, const char* description)
@@ -64,7 +65,8 @@ void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
     glfwSetWindowUserPointer(m_mainWindow, &m_glfwWindowInfo);
     
     // WINDOW SPESIFIC EVENTS
-    glfwSetWindowSizeCallback(m_mainWindow, [](GLFWwindow* window, int width, int height){
+    glfwSetWindowSizeCallback(m_mainWindow,
+    [](GLFWwindow* window, int width, int height){
         glfwWindowInformation& windowInfo =
             *(glfwWindowInformation*)glfwGetWindowUserPointer(window);
         windowInfo.WindowWidth = width;
@@ -82,11 +84,14 @@ void GlfwWindow::initializeGLFW(const WindowInformation& windowInfo)
         windowInfo.CallbackFunc(windowCloseEvent);
     });
 
-    // KEYBOARD SPESIFIC EVENTS
-    // glfwSetKeyCallback(m_mainWindow,
-    //     [](GLFWwindow* window, int key, int scancode, int action, int mods){
-            
-    //     });
+    glfwSetCursorPosCallback(m_mainWindow,
+    [](GLFWwindow* window, double xPos, double yPos){
+        glfwWindowInformation& windowInfo =
+            *(glfwWindowInformation*)glfwGetWindowUserPointer(window);
+        
+        MouseMoveEvent mouseMoveEvent((float)xPos, (float)yPos);
+        windowInfo.CallbackFunc(mouseMoveEvent);
+    });
 }
 
 void GlfwWindow::Update()

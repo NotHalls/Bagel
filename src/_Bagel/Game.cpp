@@ -34,8 +34,8 @@ void Game::Update(double deltaTime)
     RenderCommand::ColorScreen(m_screenColor);
 
     m_CameraController.OnUpdate((float)deltaTime);
-    Input::OnMouseMove(
-        std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
+    // Input::OnMouseMove(
+    //     std::bind(&Game::onMouseMove, this, std::placeholders::_1, std::placeholders::_2));
 
     m_model->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
     m_backpack->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
@@ -50,12 +50,20 @@ void Game::Update(double deltaTime)
     Renderer::EndScene();
 }
 
+void Game::ProcessEvent(Event& event)
+{
+    EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<MouseMoveEvent>(BIND_EVENT(Game::onMouseMove));
+}
+
 void Game::Destroy()
 {}
 
 
-// @TODO: This should be in the CameraController Class
-void Game::onMouseMove(float x, float y)
+bool Game::onMouseMove(MouseMoveEvent& mouseMoveEvent)
 {
-    m_CameraController.OnMouseMove(x, y);
+    std::cout << mouseMoveEvent.ToString() << "\n";
+    m_CameraController.OnMouseMove(mouseMoveEvent.GetMouseAxis());
+
+    return false;
 }

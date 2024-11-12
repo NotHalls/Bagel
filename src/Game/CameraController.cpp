@@ -34,6 +34,8 @@ void CameraController::OnUpdate(float dt)
         Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
 }
 
+void CameraController::OnMouseMove(const glm::vec2& mouseAxis)
+{ OnMouseMove(mouseAxis.x, mouseAxis.y); }
 void CameraController::OnMouseMove(float x, float y)
 {
     if(m_firstMouse)

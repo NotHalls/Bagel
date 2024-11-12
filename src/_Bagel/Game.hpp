@@ -6,6 +6,7 @@
 #include "BagelMath.hpp"
 #include "BagelEngine.hpp"
 #include "BagelApp.hpp"
+#include "BagelInput.hpp"
 
 #include "Renderer/Model/Mesh.hpp"
 #include "Renderer/Model/Model.hpp"
@@ -29,7 +30,7 @@ private:
 
 
 private:
-    void onMouseMove(float x, float y);
+    bool onMouseMove(MouseMoveEvent& mouseMoveEvent);
 
 public:
     Game();
@@ -37,5 +38,6 @@ public:
 
     virtual void Start() override;
     virtual void Update(double deltaTime) override;
+    virtual void ProcessEvent(Event& event) override;
     virtual void Destroy() override;
 };

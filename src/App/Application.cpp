@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <ranges>
 
 #include "Application.hpp"
 #include "Layer.hpp"
@@ -8,6 +9,7 @@
 #include "Renderer/RenderCommands.hpp"
 
 #include "Events/WindowEvents.hpp"
+
 
 
 Application* Application::m_app = nullptr;
@@ -33,6 +35,11 @@ void Application::ProcessEvents(Event& event)
     EventDispatcher dispatcher(event);
     dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT(Application::Resize));
     dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT(Application::Close));
+
+    for(Layer* layer : std::ranges::reverse_view(m_layerLists))
+    {
+        layer->ProcessEvent(event);
+    }
 }
 
 void Application::Run()

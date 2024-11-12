@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Events/Events.hpp"
+
 
 class Layer
 {
@@ -17,5 +19,6 @@ public:
 
     virtual void Start() {}
     virtual void Update(double deltaTime) {}
+    virtual void ProcessEvent(Event& event) {}
     virtual void Destroy() {}
 };

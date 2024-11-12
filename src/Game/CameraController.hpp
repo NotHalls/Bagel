@@ -31,6 +31,7 @@ public:
     const Camera& GetCamera() const { return m_camera; }
 
     void OnUpdate(float dt);
+    void OnMouseMove(const glm::vec2& mouseAxis);
     void OnMouseMove(float x, float y);
     void OnResize(float width, float height);
 };
