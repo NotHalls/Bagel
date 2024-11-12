@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include <glad/glad.h>
-
 #include "BagelInput.hpp"
 #include "BagelMath.hpp"
 
@@ -30,7 +28,6 @@ void Game::Start()
 
 void Game::Update(double deltaTime)
 {
-    glEnable(GL_DEPTH_TEST);
     RenderCommand::ColorScreen(m_screenColor);
 
     m_CameraController.OnUpdate((float)deltaTime);

@@ -8,6 +8,7 @@
 
 void RenderCommand::Init(int width, int height)
 {
+    glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, width, height);
 }
 
