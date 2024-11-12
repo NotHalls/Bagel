@@ -1,3 +1,8 @@
+#This is private stuff that you wanna exclude
+# i use TODOS to note what i wanna do next and what is important
+*my*.todo
+
+
 #DIRs
 .vs/
 .vscode/
