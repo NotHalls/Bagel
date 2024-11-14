@@ -12,6 +12,7 @@ private:
     struct SceneData
     {
         glm::mat4 ViewProjectionMatrix = glm::mat4(1.0f);
+        glm::mat4 ModelMatrix = glm::mat4(1.0f);
         std::shared_ptr<Shader> SceneShader;
     };
     static SceneData* m_sceneData;

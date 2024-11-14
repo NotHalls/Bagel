@@ -255,5 +255,137 @@ void Model::createPlane(uint32_t importSettings,
 void Model::createCube(uint32_t importSettings,
     const std::shared_ptr<Texture>& texture)
 {
-    
+    std::vector<ModelVertice> cubeVertices;
+    // front vertices
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, -1.0f, 1.0f) },
+        { glm::vec3( 1.0f,  1.0f, 1.0f) },
+        { glm::vec2( 0.0f,  0.0f)       },
+        { glm::vec3( 1.0f,  1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, -1.0f, 1.0f) },
+        { glm::vec3(1.0f,  1.0f, 1.0f) },
+        { glm::vec2(1.0f,  0.0f)       },
+        { glm::vec3(1.0f,  1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, 1.0f, 1.0f) },
+        { glm::vec3(1.0f, 1.0f, 1.0f) },
+        { glm::vec2(1.0f, 1.0f)       },
+        { glm::vec3(1.0f, 1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, 1.0f, 1.0f) },
+        { glm::vec3( 1.0f, 1.0f, 1.0f) },
+        { glm::vec2( 0.0f, 1.0f)       },
+        { glm::vec3( 1.0f, 1.0f, 1.0f) }
+    });
+    // back vertices
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, -1.0f, -1.0f) },
+        { glm::vec3( 1.0f,  1.0f,  1.0f) },
+        { glm::vec2( 1.0f,  0.0f)        },
+        { glm::vec3( 1.0f,  1.0f,  1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, -1.0f, -1.0f) },
+        { glm::vec3(1.0f,  1.0f,  1.0f) },
+        { glm::vec2(0.0f,  0.0f)       },
+        { glm::vec3(1.0f,  1.0f,  1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, 1.0f, -1.0f) },
+        { glm::vec3(1.0f, 1.0f,  1.0f) },
+        { glm::vec2(0.0f, 1.0f)        },
+        { glm::vec3(1.0f, 1.0f,  1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, 1.0f, -1.0f) },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) },
+        { glm::vec2( 1.0f, 1.0f)        },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) }
+    });
+    // top
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, 1.0f, 1.0f) },
+        { glm::vec3( 1.0f, 1.0f, 1.0f) },
+        { glm::vec2( 0.0f, 0.0f)       },
+        { glm::vec3( 1.0f, 1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, 1.0f, 1.0f) },
+        { glm::vec3(1.0f, 1.0f, 1.0f) },
+        { glm::vec2(1.0f, 0.0f)       },
+        { glm::vec3(1.0f, 1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, 1.0f, -1.0f) },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) },
+        { glm::vec2( 0.0f, 1.0f)       },
+        { glm::vec3( 1.0f, 1.0f,  1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, 1.0f, -1.0f) },
+        { glm::vec3(1.0f, 1.0f,  1.0f) },
+        { glm::vec2(1.0f, 1.0f)       },
+        { glm::vec3(1.0f, 1.0f,  1.0f) }
+    });
+    // bottom
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, -1.0f, 1.0f) },
+        { glm::vec3( 1.0f,  1.0f, 1.0f) },
+        { glm::vec2( 0.0f,  0.0f)       },
+        { glm::vec3( 1.0f,  1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, -1.0f, 1.0f) },
+        { glm::vec3(1.0f,  1.0f, 1.0f) },
+        { glm::vec2(1.0f,  0.0f)       },
+        { glm::vec3(1.0f,  1.0f, 1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(-1.0f, -1.0f, -1.0f) },
+        { glm::vec3( 1.0f,  1.0f,  1.0f) },
+        { glm::vec2( 0.0f,  1.0f)       },
+        { glm::vec3( 1.0f,  1.0f,  1.0f) }
+    });
+    cubeVertices.push_back({
+        { glm::vec3(1.0f, -1.0f, -1.0f) },
+        { glm::vec3(1.0f,  1.0f,  1.0f) },
+        { glm::vec2(1.0f,  1.0f)       },
+        { glm::vec3(1.0f,  1.0f,  1.0f) }
+    });
+
+    std::vector<uint32_t> cubeIndices = {
+        // front face
+        0, 1, 2,
+        2, 3, 0,
+
+        // right face
+        1, 5, 6,
+        6, 2, 1,
+
+        // back face
+        5, 4, 7,
+        7, 6, 5,
+
+        // left face
+        4, 0, 3,
+        3, 7, 4,
+
+        // top face
+        8, 9, 10,
+        10, 11, 9,
+
+        // bottom face
+        12, 13, 14,
+        14, 15, 13
+    };
+
+    std::vector<std::shared_ptr<Texture>> cubeTextures;
+    cubeTextures.push_back(texture);
+
+    Mesh cubeMesh(cubeVertices, cubeIndices, cubeTextures);
+    m_meshes.push_back(cubeMesh);
 }

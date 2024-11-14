@@ -20,18 +20,18 @@ Game::Game()
 
     // @TODO: create a DefaultModel with only color.
     // maybe we can add that when we have materials implemented
-    m_box = Model::Create(DefaultModels::Plane, m_boxTexture);
+    m_box = Model::Create(DefaultModels::Cube, m_boxTexture);
 }
 
 void Game::Start()
 {
     // WOW!!! THE PERFORMENCE IS... ASS PROBABLY
     // CURNT MODELS: 100 * 100 with 4 vertices (planes)
-    for(int i = 0; i < 100; i++)
+    for(int i = 0; i < 10; i++)
     {
-        for(int j = 0; j < 100; j++)
+        for(int j = 0; j < 10; j++)
         {
-            std::shared_ptr<Model> model = Model::Create(DefaultModels::Plane, m_boxTexture);
+            std::shared_ptr<Model> model = Model::Create(DefaultModels::Cube, m_boxTexture);
             model->GetTransform().Position = glm::vec3((float)i * 2.5f, (float)j * 2.5f, 0.0f);
             model->GetTransform().Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
 

@@ -27,5 +27,7 @@ void Renderer::StartScene(const Camera& camera)
 
 void Renderer::EndScene()
 {
-
+    glm::mat4 mvp = m_sceneData->ViewProjectionMatrix *
+                    m_sceneData->ModelMatrix;
+    m_sceneData->SceneShader->SetUniformMat4("u_mvp", mvp);
 }
