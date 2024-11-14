@@ -2,6 +2,11 @@
 
 #include "Renderer/Camera.hpp"
 
+#include "Events/Events.hpp"
+#include "Events/InputEvents.hpp"
+#include "Events/WindowEvents.hpp"
+
+
 class CameraController
 {
 private:
@@ -31,7 +36,8 @@ public:
     const Camera& GetCamera() const { return m_camera; }
 
     void OnUpdate(float dt);
-    void OnMouseMove(const glm::vec2& mouseAxis);
-    void OnMouseMove(float x, float y);
-    void OnResize(float width, float height);
+    void OnEvent(Event& event);
+
+    bool OnMouseMove(MouseMoveEvent& mousemoveEvent);
+    bool OnResize(WindowResizeEvent& windowResizeEvent);
 };

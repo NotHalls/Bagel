@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "CameraController.hpp"
 
 #include "BagelInput.hpp"
@@ -34,22 +36,30 @@ void CameraController::OnUpdate(float dt)
         Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
 }
 
-void CameraController::OnMouseMove(const glm::vec2& mouseAxis)
-{ OnMouseMove(mouseAxis.x, mouseAxis.y); }
-void CameraController::OnMouseMove(float x, float y)
+void CameraController::OnEvent(Event& event)
+{
+    EventDispatcher dispatcher(event);
+
+    dispatcher.Dispatch<MouseMoveEvent>
+    (BIND_EVENT(CameraController::OnMouseMove));
+    dispatcher.Dispatch<WindowResizeEvent>
+    (BIND_EVENT(CameraController::OnResize));
+}
+
+bool CameraController::OnMouseMove(MouseMoveEvent& mouseMoveEvent)
 {
     if(m_firstMouse)
     {
-        m_lastX = x;
-        m_lastY = y;
+        m_lastX = mouseMoveEvent.GetMouseAxis().x;
+        m_lastY = mouseMoveEvent.GetMouseAxis().y;
 
         m_firstMouse = false;
     }
 
-    float xOffset = x - m_lastX;
-    float yOffset = m_lastY - y;
-    m_lastX = x;
-    m_lastY = y;
+    float xOffset = mouseMoveEvent.GetMouseAxis().x - m_lastX;
+    float yOffset = m_lastY - mouseMoveEvent.GetMouseAxis().y;
+    m_lastX = mouseMoveEvent.GetMouseAxis().x;
+    m_lastY = mouseMoveEvent.GetMouseAxis().y;
 
     xOffset *= m_mouseSensitivity;
     yOffset *= m_mouseSensitivity;
@@ -68,9 +78,16 @@ void CameraController::OnMouseMove(float x, float y)
     dir.y = sin(glm::radians(m_pitch));
     dir.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
     m_camera.SetLookingTarget(dir);
+
+    return false;
 }
 
-void CameraController::OnResize(float width, float height)
+bool CameraController::OnResize(WindowResizeEvent& windowResizeEvent)
 {
-    m_camera.SetSize(width, height);
+    m_camera.SetSize(
+        windowResizeEvent.GetWidth(),
+        windowResizeEvent.GetHeight()
+    );
+
+    return false;
 }

@@ -63,22 +63,13 @@ void Game::Update(double deltaTime)
     }
     Renderer::EndScene();
 
-    std::cout << 1 / deltaTime << "\n";
+    // std::cout << 1 / deltaTime << "\n";
 }
 
 void Game::ProcessEvent(Event& event)
 {
-    EventDispatcher dispatcher(event);
-    dispatcher.Dispatch<MouseMoveEvent>(BIND_EVENT(Game::onMouseMove));
+    m_CameraController.OnEvent(event);
 }
 
 void Game::Destroy()
 {}
-
-
-bool Game::onMouseMove(MouseMoveEvent& mouseMoveEvent)
-{
-    m_CameraController.OnMouseMove(mouseMoveEvent.GetMouseAxis());
-
-    return false;
-}
