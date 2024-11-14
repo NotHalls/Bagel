@@ -30,7 +30,7 @@ void CameraController::OnUpdate(float dt)
             m_camera.GetLookingTarget(), {0.0f, 1.0f, 0.0f})) * m_speed * dt;
     m_camera.SetPosition(camPosition);
 
-    if(Input::IsKeyClicked(BG_KEY_C))
+    if(Input::IsKeyClicked(BG_KEY_F))
         Input::SetCursorMode(BG_CURSOR_MODE_DISABLED);
 }
 

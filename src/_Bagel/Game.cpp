@@ -27,7 +27,7 @@ void Game::Start()
 {
     // WOW!!! THE PERFORMENCE IS... ASS PROBABLY
     // CURNT MODELS: 100 * 100 with 4 vertices (planes)
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 100; i++)
     {
         for(int j = 0; j < 10; j++)
         {
