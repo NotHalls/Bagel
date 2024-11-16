@@ -22,12 +22,16 @@ private:
     CameraController m_CameraController;
 
     std::shared_ptr<Texture> m_boxTexture;
+    std::shared_ptr<Texture> m_defaultTex;
 
     std::shared_ptr<Model> m_model;
     std::shared_ptr<Model> m_backpack;
 
     std::shared_ptr<Model> m_box;
 
+    std::shared_ptr<Model> m_testCube;
+
+    // TESTING
     std::vector<std::shared_ptr<Model>> m_WOW;
     
 

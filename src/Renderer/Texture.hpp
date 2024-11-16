@@ -43,9 +43,11 @@ private:
 
 private:
     void Init();
+    void InitWithDefaults();
 
 public:
     Texture() = default;
+    Texture(int width, int height);
     Texture(const std::string& texPath);
     Texture(const std::string& texPath, TextureType type);
     ~Texture();
@@ -63,9 +65,13 @@ public:
     TextureType GetTextureType() { return m_textureType; }
     void SetTextureType(TextureType type) { m_textureType = type; }
 
+    void SetData(void* data, uint32_t size);
+
     void Bind(uint32_t slot = 0);
     void Unbind(uint32_t slot);
 
     static std::unique_ptr<Texture> Create(const std::string& texPath);
     static std::unique_ptr<Texture> Create(const std::string& texPath, TextureType type);
+    // for generating a default 1x1 white texture
+    static std::unique_ptr<Texture> Create(int width, int height);
 };

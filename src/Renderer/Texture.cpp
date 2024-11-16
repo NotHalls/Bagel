@@ -11,7 +11,12 @@ std::unique_ptr<Texture> Texture::Create(const std::string& texPath)
 { return std::make_unique<Texture>(texPath); }
 std::unique_ptr<Texture> Texture::Create(const std::string& texPath, TextureType type)
 { return std::make_unique<Texture>(texPath, type); }
+std::unique_ptr<Texture> Texture::Create(int width, int height)
+{ return std::make_unique<Texture>(width, height); }
 
+Texture::Texture(int width, int height)
+    : m_width(width), m_height(height)
+{ InitWithDefaults(); }
 Texture::Texture(const std::string& texPath)
     : m_texFile(texPath), m_textureID(0), m_width(0), m_height(0)
 { Init(); }
@@ -68,7 +73,36 @@ void Texture::Init()
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+void Texture::InitWithDefaults()
+{
+    // @TODO: We Have To Make A Default Texture
+    // like how we made a Default Model thing
+    m_dataColorFormat = GL_RGBA8;
+    m_textureColorFormat = GL_RGBA;
 
+    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+    glTextureStorage2D(m_textureID, 1, m_dataColorFormat, m_width, m_height);
+
+    glTexParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+}
+
+void Texture::SetData(void* data, uint32_t size)
+{
+    // remember, when you give the RGBA data, it is reversed (ABGR) not (RGBA)
+    // so 0xAABBGGRR not 0xRRGGBBAA
+
+    uint32_t bytesPerPixel = m_textureColorFormat == GL_RGBA ? 4 : 3;
+    ASSERT(size == m_width * m_height * bytesPerPixel,
+        "Invalid Size Of Texture Data.\
+        \n The Size Should Be The Same As The Whole Texture"
+    )
+    glTextureSubImage2D(
+        m_textureID,
+        0, 0, 0, m_width, m_height,
+        m_textureColorFormat, GL_UNSIGNED_BYTE, data
+    );
+}
 
 void Texture::Bind(uint32_t slot)
 { glBindTextureUnit(slot, m_textureID); }
