@@ -6,28 +6,25 @@
 
 #include "Tools/Debug.hpp"
 
+Renderer::SceneData *Renderer::m_sceneData = new SceneData;
 
-Renderer::SceneData* Renderer::m_sceneData = new SceneData;
-
-
-void Renderer::Init(const std::vector<std::string>& filePaths)
+void Renderer::Init(const std::vector<std::string> &filePaths)
 {
-    ASSERT(m_sceneData, "The Scene Data Was Not Initialized!");
+  ASSERT(m_sceneData, "The Scene Data Was Not Initialized!");
 
-    m_sceneData->SceneShader = Shader::CreateShader(filePaths);
-    m_sceneData->SceneShader->Bind();
+  m_sceneData->SceneShader = Shader::CreateShader(filePaths);
+  m_sceneData->SceneShader->Bind();
 }
 
-void Renderer::StartScene(const Camera& camera)
+void Renderer::StartScene(const Camera &camera)
 {
-    ASSERT(m_sceneData->SceneShader, "The Shader Program Was Not Inirialized");
+  ASSERT(m_sceneData->SceneShader, "The Shader Program Was Not Inirialized");
 
-    m_sceneData->ViewProjectionMatrix = camera.GetViewAndProjectionMatrix();
+  m_sceneData->ViewProjectionMatrix = camera.GetViewAndProjectionMatrix();
 }
 
 void Renderer::EndScene()
 {
-    glm::mat4 mvp = m_sceneData->ViewProjectionMatrix *
-                    m_sceneData->ModelMatrix;
-    m_sceneData->SceneShader->SetUniformMat4("u_mvp", mvp);
+  glm::mat4 mvp = m_sceneData->ViewProjectionMatrix * m_sceneData->ModelMatrix;
+  m_sceneData->SceneShader->SetUniformMat4("u_mvp", mvp);
 }

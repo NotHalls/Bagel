@@ -1,391 +1,342 @@
 #include "Model.hpp"
 
+#include "stb_image.hpp"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include "stb_image.hpp"
 
 #include "Tools/Debug.hpp"
-
 
 // private to this file
 aiTextureType GetAssimpTextureType(TextureType type)
 {
-    switch(type)
-    {
-        case TextureType::None:         return aiTextureType_NONE;
-        case TextureType::Diffuse:      return aiTextureType_DIFFUSE;
-        case TextureType::Roughness:    return aiTextureType_DIFFUSE_ROUGHNESS;
-        case TextureType::Metallic:     return aiTextureType_METALNESS;
-        case TextureType::Normal:       return aiTextureType_NORMALS;
+  switch(type)
+  {
+  case TextureType::None:
+    return aiTextureType_NONE;
+  case TextureType::Diffuse:
+    return aiTextureType_DIFFUSE;
+  case TextureType::Roughness:
+    return aiTextureType_DIFFUSE_ROUGHNESS;
+  case TextureType::Metallic:
+    return aiTextureType_METALNESS;
+  case TextureType::Normal:
+    return aiTextureType_NORMALS;
 
-        default: return aiTextureType_UNKNOWN;
-    }
+  default:
     return aiTextureType_UNKNOWN;
+  }
+  return aiTextureType_UNKNOWN;
 }
 
-
-std::shared_ptr<Model> Model::Create(const std::string& modelPath, uint32_t importSettings)
-{ return std::make_shared<Model>(modelPath, importSettings); }
+std::shared_ptr<Model> Model::Create(const std::string &modelPath,
+                                     uint32_t importSettings)
+{
+  return std::make_shared<Model>(modelPath, importSettings);
+}
 
 // this is to create basic models
 std::shared_ptr<Model> Model::Create(DefaultModels model,
-    const std::shared_ptr<Texture>& texture,
-    uint32_t importSettings)
-{ return std::make_shared<Model>(model, texture, importSettings); }
+                                     const std::shared_ptr<Texture> &texture,
+                                     uint32_t importSettings)
+{
+  return std::make_shared<Model>(model, texture, importSettings);
+}
 
-
-Model::Model(const std::string& modelPath, uint32_t importSettings)
+Model::Model(const std::string &modelPath, uint32_t importSettings)
     : m_modelImportSettings(importSettings)
 {
-    m_modelDirectory = modelPath.substr(0, modelPath.find_last_of("/"));
-    loadModel(modelPath);
+  m_modelDirectory = modelPath.substr(0, modelPath.find_last_of("/"));
+  loadModel(modelPath);
 }
 
 // this is where we call the right functions to setup those basic meshes
-Model::Model(DefaultModels model, const std::shared_ptr<Texture>& texture,
-        uint32_t importSettings)
+Model::Model(DefaultModels model, const std::shared_ptr<Texture> &texture,
+             uint32_t importSettings)
 {
-    switch(model)
-    {
-        case DefaultModels::Plane:  createPlane(importSettings, texture);
-        case DefaultModels::Cube:   createCube(importSettings, texture);
+  switch(model)
+  {
+  case DefaultModels::Plane:
+    createPlane(importSettings, texture);
+  case DefaultModels::Cube:
+    createCube(importSettings, texture);
 
-        default: ASSERT(true, "The Selected Default Model Doesn't Exist");
-    }
-
+  default:
     ASSERT(true, "The Selected Default Model Doesn't Exist");
+  }
+
+  ASSERT(true, "The Selected Default Model Doesn't Exist");
 }
 
 void Model::Draw()
 {
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
+  glm::mat4 modelMatrix = glm::mat4(1.0f);
 
-    glm::mat4 rotation =
-        glm::rotate(glm::mat4(1.0f), 
-            glm::radians(m_transform.Rotation.x),
-            glm::vec3(1.0f, 0.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f),
-            glm::radians(m_transform.Rotation.y),
-            glm::vec3(0.0f, 1.0f, 0.0f)) *
-        glm::rotate(glm::mat4(1.0f),
-            glm::radians(m_transform.Rotation.z),
-            glm::vec3(0.0f, 0.0f, 1.0f));
+  glm::mat4 rotation =
+      glm::rotate(glm::mat4(1.0f), glm::radians(m_transform.Rotation.x),
+                  glm::vec3(1.0f, 0.0f, 0.0f)) *
+      glm::rotate(glm::mat4(1.0f), glm::radians(m_transform.Rotation.y),
+                  glm::vec3(0.0f, 1.0f, 0.0f)) *
+      glm::rotate(glm::mat4(1.0f), glm::radians(m_transform.Rotation.z),
+                  glm::vec3(0.0f, 0.0f, 1.0f));
 
-    modelMatrix =
-        glm::translate(glm::mat4(1.0f), m_transform.Position) *
-        rotation *
-        glm::scale(glm::mat4(1.0f), m_transform.Scale);
+  modelMatrix = glm::translate(glm::mat4(1.0f), m_transform.Position) *
+                rotation * glm::scale(glm::mat4(1.0f), m_transform.Scale);
 
-    for(Mesh mesh : m_meshes)
-        mesh.Draw(modelMatrix);
+  for(Mesh mesh : m_meshes)
+    mesh.Draw(modelMatrix);
 }
 
-
-void Model::loadModel(const std::string& modelPath)
+void Model::loadModel(const std::string &modelPath)
 {
-    Assimp::Importer importer;
-    // @BEFORE_COMMIT: does the importSettings work?
-    const aiScene* scene = importer.ReadFile(modelPath,
-        m_modelImportSettings |
-        aiProcess_PreTransformVertices |
-        aiProcess_GlobalScale);
+  Assimp::Importer importer;
+  // @BEFORE_COMMIT: does the importSettings work?
+  const aiScene *scene = importer.ReadFile(
+      modelPath, m_modelImportSettings | aiProcess_PreTransformVertices |
+                     aiProcess_GlobalScale);
 
-    ASSERT(scene,
-        "Failed To Initialize The Assimp Scene In Model: " + modelPath
-        + "\n\tERROR: " + importer.GetErrorString() + "\n");
-    ASSERT(!(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE),
-        "Failed To Initialize Assimp Scene Flags In Model: " + modelPath
-        + "\n\tERROR: " + importer.GetErrorString() + "\n");
-    ASSERT(scene->mRootNode,
-        "Failed To Find The Root Node In Model: " + modelPath
-        + "\n\tERROR: " + importer.GetErrorString() + "\n");
+  ASSERT(scene, "Failed To Initialize The Assimp Scene In Model: " + modelPath +
+                    "\n\tERROR: " + importer.GetErrorString() + "\n");
+  ASSERT(!(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE),
+         "Failed To Initialize Assimp Scene Flags In Model: " + modelPath +
+             "\n\tERROR: " + importer.GetErrorString() + "\n");
+  ASSERT(scene->mRootNode,
+         "Failed To Find The Root Node In Model: " + modelPath +
+             "\n\tERROR: " + importer.GetErrorString() + "\n");
 
-    processNode(scene->mRootNode, scene);
+  processNode(scene->mRootNode, scene);
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void Model::processNode(aiNode *node, const aiScene *scene)
 {
-    for(uint32_t i = 0; i < node->mNumMeshes; i++)
-    {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        m_meshes.push_back(processMesh(mesh, scene));
-    }
+  for(uint32_t i = 0; i < node->mNumMeshes; i++)
+  {
+    aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+    m_meshes.push_back(processMesh(mesh, scene));
+  }
 
-    for(uint32_t i = 0; i < node->mNumChildren; i++)
-        processNode(node->mChildren[i], scene);
+  for(uint32_t i = 0; i < node->mNumChildren; i++)
+    processNode(node->mChildren[i], scene);
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 {
-    std::vector<ModelVertice> vertices;
-    std::vector<uint32_t> indices;
-    std::vector<std::shared_ptr<Texture>> textures;
+  std::vector<ModelVertice> vertices;
+  std::vector<uint32_t> indices;
+  std::vector<std::shared_ptr<Texture>> textures;
 
-    // process vertices
-    for(uint32_t i = 0; i < mesh->mNumVertices; i++)
+  // process vertices
+  for(uint32_t i = 0; i < mesh->mNumVertices; i++)
+  {
+    ModelVertice vertice;
+
+    glm::vec3 vertexPosition;
+    vertexPosition.x = mesh->mVertices[i].x;
+    vertexPosition.y = mesh->mVertices[i].y;
+    vertexPosition.z = mesh->mVertices[i].z;
+    vertice.Position = vertexPosition;
+
+    glm::vec3 vertexNormal;
+    vertexNormal.x = mesh->mNormals[i].x;
+    vertexNormal.y = mesh->mNormals[i].y;
+    vertexNormal.z = mesh->mNormals[i].z;
+    vertice.Normals = vertexNormal;
+
+    // @TODO: Add Colors From ASSIMP
+    glm::vec3 vertexColor;
+    vertexColor.x = 1.0f;
+    vertexColor.y = 1.0f;
+    vertexColor.z = 1.0f;
+    vertice.Color = vertexColor;
+
+    if(mesh->mTextureCoords[0])
     {
-        ModelVertice vertice;
-
-        glm::vec3 vertexPosition;
-        vertexPosition.x = mesh->mVertices[i].x;
-        vertexPosition.y = mesh->mVertices[i].y;
-        vertexPosition.z = mesh->mVertices[i].z;
-        vertice.Position = vertexPosition;
-
-        glm::vec3 vertexNormal;
-        vertexNormal.x = mesh->mNormals[i].x;
-        vertexNormal.y = mesh->mNormals[i].y;
-        vertexNormal.z = mesh->mNormals[i].z;
-        vertice.Normals = vertexNormal;
-
-        // @TODO: Add Colors From ASSIMP
-        glm::vec3 vertexColor;
-        vertexColor.x = 1.0f;
-        vertexColor.y = 1.0f;
-        vertexColor.z = 1.0f;
-        vertice.Color = vertexColor;
-
-        if(mesh->mTextureCoords[0])
-        {
-            glm::vec2 vertexTexCoord;
-            vertexTexCoord.x = mesh->mTextureCoords[0][i].x;
-            vertexTexCoord.y = mesh->mTextureCoords[0][i].y;
-            vertice.TextureCoordinates = vertexTexCoord;
-        }   
-        else
-            vertice.TextureCoordinates = glm::vec2(0.0f, 0.0f);
-
-        vertices.push_back(vertice);
+      glm::vec2 vertexTexCoord;
+      vertexTexCoord.x = mesh->mTextureCoords[0][i].x;
+      vertexTexCoord.y = mesh->mTextureCoords[0][i].y;
+      vertice.TextureCoordinates = vertexTexCoord;
     }
+    else
+      vertice.TextureCoordinates = glm::vec2(0.0f, 0.0f);
 
-    // process indices
-    for(uint32_t i = 0; i < mesh->mNumFaces; i++)
-    {
-        aiFace face = mesh->mFaces[i];
-        for(uint32_t j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[j]);
-    }
+    vertices.push_back(vertice);
+  }
 
-    // process textures
-    if(mesh->mMaterialIndex >= 0)
-    {
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+  // process indices
+  for(uint32_t i = 0; i < mesh->mNumFaces; i++)
+  {
+    aiFace face = mesh->mFaces[i];
+    for(uint32_t j = 0; j < face.mNumIndices; j++)
+      indices.push_back(face.mIndices[j]);
+  }
 
-        std::vector<std::shared_ptr<Texture>> diffuseMaps =
-            loadMaterialTexture(material, TextureType::Diffuse);
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        
-        std::vector<std::shared_ptr<Texture>> roughnessMaps =
-            loadMaterialTexture(material, TextureType::Roughness);
-        textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
+  // process textures
+  if(mesh->mMaterialIndex >= 0)
+  {
+    aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
-        std::vector<std::shared_ptr<Texture>> metallicMaps =
-            loadMaterialTexture(material, TextureType::Metallic);
-        textures.insert(textures.end(),metallicMaps.begin(),metallicMaps.end());
+    std::vector<std::shared_ptr<Texture>> diffuseMaps =
+        loadMaterialTexture(material, TextureType::Diffuse);
+    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        std::vector<std::shared_ptr<Texture>> normalMaps =
-            loadMaterialTexture(material, TextureType::Normal);
-        textures.insert(textures.end(),normalMaps.begin(),normalMaps.end());
-    }
+    std::vector<std::shared_ptr<Texture>> roughnessMaps =
+        loadMaterialTexture(material, TextureType::Roughness);
+    textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
 
-    return Mesh(vertices, indices, textures);
+    std::vector<std::shared_ptr<Texture>> metallicMaps =
+        loadMaterialTexture(material, TextureType::Metallic);
+    textures.insert(textures.end(), metallicMaps.begin(), metallicMaps.end());
+
+    std::vector<std::shared_ptr<Texture>> normalMaps =
+        loadMaterialTexture(material, TextureType::Normal);
+    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+  }
+
+  return Mesh(vertices, indices, textures);
 }
-
 
 std::vector<std::shared_ptr<Texture>> Model::loadMaterialTexture(
-    aiMaterial* material, TextureType textureTypeEnum)
+    aiMaterial *material, TextureType textureTypeEnum)
 {
-    std::vector<std::shared_ptr<Texture>> textures;
-    for(uint32_t i = 0; i < material->GetTextureCount(GetAssimpTextureType(textureTypeEnum)); i++)
-    {
-        aiString str;
-        material->GetTexture(GetAssimpTextureType(textureTypeEnum), i, &str);
+  std::vector<std::shared_ptr<Texture>> textures;
+  for(uint32_t i = 0;
+      i < material->GetTextureCount(GetAssimpTextureType(textureTypeEnum)); i++)
+  {
+    aiString str;
+    material->GetTexture(GetAssimpTextureType(textureTypeEnum), i, &str);
 
-        std::shared_ptr<Texture> texture = 
-        Texture::Create(m_modelDirectory + "/" + std::string(str.C_Str()), textureTypeEnum);
-        textures.push_back(texture);
-    }
-    return textures;
+    std::shared_ptr<Texture> texture = Texture::Create(
+        m_modelDirectory + "/" + std::string(str.C_Str()), textureTypeEnum);
+    textures.push_back(texture);
+  }
+  return textures;
 }
 
-
 void Model::createPlane(uint32_t importSettings,
-    const std::shared_ptr<Texture>& texture)
+                        const std::shared_ptr<Texture> &texture)
 {
-    std::vector<ModelVertice> planeVertices;
-    planeVertices.push_back(ModelVertice{
-        { glm::vec3(-1.0f, 0.0f, -1.0f) },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) },
-        { glm::vec2( 0.0f, 0.0f)        },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) }
-    });
-    planeVertices.push_back(ModelVertice{
-        { glm::vec3(1.0f,  0.0f, -1.0f) },
-        { glm::vec3(1.0f,  1.0f,  1.0f) },
-        { glm::vec2(1.0f,  0.0f)        },
-        { glm::vec3(1.0f,  1.0f,  1.0f) }
-    });
-    planeVertices.push_back(ModelVertice{
-        { glm::vec3(-1.0f, 0.0f,  1.0f) },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) },
-        { glm::vec2( 0.0f, 1.0f)        },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) }
-    });
-    planeVertices.push_back(ModelVertice{
-        { glm::vec3(1.0f, 0.0f,  1.0f) },
-        { glm::vec3(1.0f, 1.0f,  1.0f) },
-        { glm::vec2(1.0f, 1.0f)        },
-        { glm::vec3(1.0f, 1.0f,  1.0f) }
-    });
+  std::vector<ModelVertice> planeVertices;
+  planeVertices.push_back(ModelVertice{{glm::vec3(-1.0f, 0.0f, -1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)},
+                                       {glm::vec2(0.0f, 0.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  planeVertices.push_back(ModelVertice{{glm::vec3(1.0f, 0.0f, -1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)},
+                                       {glm::vec2(1.0f, 0.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  planeVertices.push_back(ModelVertice{{glm::vec3(-1.0f, 0.0f, 1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)},
+                                       {glm::vec2(0.0f, 1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  planeVertices.push_back(ModelVertice{{glm::vec3(1.0f, 0.0f, 1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)},
+                                       {glm::vec2(1.0f, 1.0f)},
+                                       {glm::vec3(1.0f, 1.0f, 1.0f)}});
 
-    std::vector<uint32_t> planeIndices;
-    planeIndices.insert(planeIndices.end(), {
-        0, 1, 2,
-        2, 3, 1
-    });
+  std::vector<uint32_t> planeIndices;
+  planeIndices.insert(planeIndices.end(), {0, 1, 2, 2, 3, 1});
 
-    std::vector<std::shared_ptr<Texture>> planeTextures;
-    planeTextures.push_back(texture);
+  std::vector<std::shared_ptr<Texture>> planeTextures;
+  planeTextures.push_back(texture);
 
-    Mesh mesh(planeVertices, planeIndices, planeTextures);
-    m_meshes.push_back(mesh);
+  Mesh mesh(planeVertices, planeIndices, planeTextures);
+  m_meshes.push_back(mesh);
 }
 
 void Model::createCube(uint32_t importSettings,
-    const std::shared_ptr<Texture>& texture)
+                       const std::shared_ptr<Texture> &texture)
 {
-    std::vector<ModelVertice> cubeVertices;
-    // front vertices
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, -1.0f, 1.0f) },
-        { glm::vec3( 1.0f,  1.0f, 1.0f) },
-        { glm::vec2( 0.0f,  0.0f)       },
-        { glm::vec3( 1.0f,  1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, -1.0f, 1.0f) },
-        { glm::vec3(1.0f,  1.0f, 1.0f) },
-        { glm::vec2(1.0f,  0.0f)       },
-        { glm::vec3(1.0f,  1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, 1.0f, 1.0f) },
-        { glm::vec3(1.0f, 1.0f, 1.0f) },
-        { glm::vec2(1.0f, 1.0f)       },
-        { glm::vec3(1.0f, 1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, 1.0f, 1.0f) },
-        { glm::vec3( 1.0f, 1.0f, 1.0f) },
-        { glm::vec2( 0.0f, 1.0f)       },
-        { glm::vec3( 1.0f, 1.0f, 1.0f) }
-    });
-    // back vertices
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, -1.0f, -1.0f) },
-        { glm::vec3( 1.0f,  1.0f,  1.0f) },
-        { glm::vec2( 1.0f,  0.0f)        },
-        { glm::vec3( 1.0f,  1.0f,  1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, -1.0f, -1.0f) },
-        { glm::vec3(1.0f,  1.0f,  1.0f) },
-        { glm::vec2(0.0f,  0.0f)       },
-        { glm::vec3(1.0f,  1.0f,  1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, 1.0f, -1.0f) },
-        { glm::vec3(1.0f, 1.0f,  1.0f) },
-        { glm::vec2(0.0f, 1.0f)        },
-        { glm::vec3(1.0f, 1.0f,  1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, 1.0f, -1.0f) },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) },
-        { glm::vec2( 1.0f, 1.0f)        },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) }
-    });
-    // top
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, 1.0f, 1.0f) },
-        { glm::vec3( 1.0f, 1.0f, 1.0f) },
-        { glm::vec2( 0.0f, 0.0f)       },
-        { glm::vec3( 1.0f, 1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, 1.0f, 1.0f) },
-        { glm::vec3(1.0f, 1.0f, 1.0f) },
-        { glm::vec2(1.0f, 0.0f)       },
-        { glm::vec3(1.0f, 1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, 1.0f, -1.0f) },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) },
-        { glm::vec2( 0.0f, 1.0f)       },
-        { glm::vec3( 1.0f, 1.0f,  1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, 1.0f, -1.0f) },
-        { glm::vec3(1.0f, 1.0f,  1.0f) },
-        { glm::vec2(1.0f, 1.0f)       },
-        { glm::vec3(1.0f, 1.0f,  1.0f) }
-    });
-    // bottom
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, -1.0f, 1.0f) },
-        { glm::vec3( 1.0f,  1.0f, 1.0f) },
-        { glm::vec2( 0.0f,  0.0f)       },
-        { glm::vec3( 1.0f,  1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, -1.0f, 1.0f) },
-        { glm::vec3(1.0f,  1.0f, 1.0f) },
-        { glm::vec2(1.0f,  0.0f)       },
-        { glm::vec3(1.0f,  1.0f, 1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(-1.0f, -1.0f, -1.0f) },
-        { glm::vec3( 1.0f,  1.0f,  1.0f) },
-        { glm::vec2( 0.0f,  1.0f)       },
-        { glm::vec3( 1.0f,  1.0f,  1.0f) }
-    });
-    cubeVertices.push_back({
-        { glm::vec3(1.0f, -1.0f, -1.0f) },
-        { glm::vec3(1.0f,  1.0f,  1.0f) },
-        { glm::vec2(1.0f,  1.0f)       },
-        { glm::vec3(1.0f,  1.0f,  1.0f) }
-    });
+  std::vector<ModelVertice> cubeVertices;
+  // front vertices
+  cubeVertices.push_back({{glm::vec3(-1.0f, -1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, -1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(-1.0f, 1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  // back vertices
+  cubeVertices.push_back({{glm::vec3(-1.0f, -1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, -1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, 1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(-1.0f, 1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  // top
+  cubeVertices.push_back({{glm::vec3(-1.0f, 1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(-1.0f, 1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, 1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  // bottom
+  cubeVertices.push_back({{glm::vec3(-1.0f, -1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, -1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 0.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(-1.0f, -1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(0.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
+  cubeVertices.push_back({{glm::vec3(1.0f, -1.0f, -1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)},
+                          {glm::vec2(1.0f, 1.0f)},
+                          {glm::vec3(1.0f, 1.0f, 1.0f)}});
 
-    std::vector<uint32_t> cubeIndices = {
-        // front face
-        0, 1, 2,
-        2, 3, 0,
+  std::vector<uint32_t> cubeIndices = {// front face
+                                       0, 1, 2, 2, 3, 0,
 
-        // right face
-        1, 5, 6,
-        6, 2, 1,
+                                       // right face
+                                       1, 5, 6, 6, 2, 1,
 
-        // back face
-        5, 4, 7,
-        7, 6, 5,
+                                       // back face
+                                       5, 4, 7, 7, 6, 5,
 
-        // left face
-        4, 0, 3,
-        3, 7, 4,
+                                       // left face
+                                       4, 0, 3, 3, 7, 4,
 
-        // top face
-        8, 9, 10,
-        10, 11, 9,
+                                       // top face
+                                       8, 9, 10, 10, 11, 9,
 
-        // bottom face
-        12, 13, 14,
-        14, 15, 13
-    };
+                                       // bottom face
+                                       12, 13, 14, 14, 15, 13};
 
-    std::vector<std::shared_ptr<Texture>> cubeTextures;
-    cubeTextures.push_back(texture);
+  std::vector<std::shared_ptr<Texture>> cubeTextures;
+  cubeTextures.push_back(texture);
 
-    Mesh cubeMesh(cubeVertices, cubeIndices, cubeTextures);
-    m_meshes.push_back(cubeMesh);
+  Mesh cubeMesh(cubeVertices, cubeIndices, cubeTextures);
+  m_meshes.push_back(cubeMesh);
 }

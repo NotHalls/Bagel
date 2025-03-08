@@ -1,11 +1,10 @@
 #include "App/Application.hpp"
 
-
-extern Application* CreateApp();
+extern Application *CreateApp();
 
 int main()
 {
-    Application* App = CreateApp();
+  Application *App = CreateApp();
 
-    App->Run();
+  App->Run();
 }

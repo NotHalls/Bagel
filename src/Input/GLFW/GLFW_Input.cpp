@@ -6,29 +6,30 @@
 
 #include "Input/Input.hpp"
 
-
 // TAKING INPUT //
 bool Input::IsKeyClicked(int keycode)
 {
-    GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().getWindow());
+  GLFWwindow *window =
+      static_cast<GLFWwindow *>(Application::Get().GetWindow().getWindow());
 
-    int state = glfwGetKey(window, keycode);
-    return state == GLFW_PRESS || state == GLFW_REPEAT;
+  int state = glfwGetKey(window, keycode);
+  return state == GLFW_PRESS || state == GLFW_REPEAT;
 }
 
 bool Input::IsMouseClicked(int button)
 {
-    GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().getWindow());
+  GLFWwindow *window =
+      static_cast<GLFWwindow *>(Application::Get().GetWindow().getWindow());
 
-    int state = glfwGetMouseButton(window, button);
-    return state == GLFW_PRESS;
+  int state = glfwGetMouseButton(window, button);
+  return state == GLFW_PRESS;
 }
-
 
 // SETTING INNPUT MODES //
 void Input::SetCursorMode(int mode)
 {
-    GLFWwindow* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().getWindow());
+  GLFWwindow *window =
+      static_cast<GLFWwindow *>(Application::Get().GetWindow().getWindow());
 
-    glfwSetInputMode(window, GLFW_CURSOR, mode);
+  glfwSetInputMode(window, GLFW_CURSOR, mode);
 }
