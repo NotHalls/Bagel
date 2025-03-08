@@ -11,70 +11,38 @@
 
 Game::Game() : Layer("Game"), m_CameraController(45.0f, 800.0f, 600.0f)
 {
-  m_model = Model::Create("assets/models/Monkey/Monkey.fbx");
-  m_backpack =
-      Model::Create("assets/models/SurvivalBagpack/Survival_BackPack_2.fbx");
-
   m_boxTexture =
       Texture::Create("assets/Textures/Box.png", TextureType::Diffuse);
+  // a default texture creation. we will have a white 1/1 pixel texture with
+  // data (color) we spesified in the SetData()
   m_defaultTex = Texture::Create(1, 1);
   m_defaultTex->SetTextureType(TextureType::Diffuse);
   uint32_t whiteColor = 0xffffffff;
   m_defaultTex->SetData(&whiteColor, sizeof(uint32_t));
-
-  m_box = Model::Create(DefaultModels::Cube, m_boxTexture);
-  m_testCube = Model::Create(DefaultModels::Cube, m_defaultTex);
 }
 
 void Game::Start()
 {
-  // WOW!!! THE PERFORMENCE IS... ASS PROBABLY
-  // CURNT MODELS: 100 * 100 with 4 vertices (planes)
-  for(int i = 0; i < 100; i++)
-  {
-    for(int j = 0; j < 10; j++)
-    {
-      std::shared_ptr<Model> model =
-          Model::Create(DefaultModels::Cube, m_boxTexture);
-      model->GetTransform().Position =
-          glm::vec3((float)i * 2.5f, (float)j * 2.5f, 0.0f);
-      model->GetTransform().Rotation = glm::vec3(90.0f, 0.0f, 0.0f);
+  // writing this code here just to test if i can write it here.
+  // i could have wrote it in the Constructor but i decided to do it here
+  // @FIXME: well the Default Plane model doesn't work correctly.
+  m_Cube = Model::Create(DefaultModels::Cube, m_boxTexture);
+  m_Light = Model::Create("assets/Models/Light.gltf");
 
-      m_WOW.push_back(model);
-    }
-  }
+  m_Light->GetTransform().Position = {0.0f, 5.0f, 0.0f};
+  m_Cube->GetTransform().Scale = {10.0f, 0.1f, 10.0f};
 }
 
 void Game::Update(double deltaTime)
 {
   RenderCommand::ColorScreen(m_screenColor);
-
   m_CameraController.OnUpdate((float)deltaTime);
-
-  m_model->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
-  m_backpack->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f,
-                                         0.0f};
-  m_box->GetTransform().Position = {sin(Time::GetElapsedTime()), 0.0f, 0.0f};
-
-  m_testCube->GetTransform().Position = {0.0f, 0.0f, 5.0f};
-
   Renderer::StartScene(m_CameraController.GetCamera());
   {
-    // m_model->Draw();
-    // m_backpack->Draw();
-    // m_box->Draw();
-
-    for(auto &wow : m_WOW)
-    {
-      wow->Draw();
-    }
-
-    m_testCube->Draw();
-    // m_thisMonkey->Draw();
+    m_Cube->Draw();
+    m_Light->Draw();
   }
   Renderer::EndScene();
-
-  // std::cout << 1 / deltaTime << "\n";
 }
 
 void Game::ProcessEvent(Event &event) { m_CameraController.OnEvent(event); }
